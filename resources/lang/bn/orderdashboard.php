@@ -40,6 +40,7 @@ return [
     'given_service_orders'=>'প্রদত্ত সার্ভিসের অর্ডার ',
 
     'enrolled_courses'=>'নিবন্ধিত কোর্স ',
+    'courier'=>'কোরিয়ার ',
 
 
    

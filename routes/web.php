@@ -1454,6 +1454,13 @@ Route::get('profile/review/rating/delete/{id}', [
         'as' => 'user.deleteOpinion'
     ]);
 
+    
+    Route::get('dashboard/my/service/profile/orders/get/courier', [
+        'uses' => 'User\UserDashborad\UserDashboardController@getCourier',
+        'as' => 'user.getCourier'
+    ]);
+    
+
     //My Orders
     Route::get('dashboard/my/all/orders', [
         'uses' => 'User\UserDashborad\UserDashboardController@myOrders',

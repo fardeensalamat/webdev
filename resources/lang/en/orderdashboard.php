@@ -40,6 +40,7 @@ return [
     'given_service_orders'=>'Given Service Orders',
 
     'enrolled_courses'=>'Enrolled Courses',
+    'courier'=>'Courier ',
 
 
    

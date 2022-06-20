@@ -11,10 +11,11 @@
             <th>ID</th>
 
             <th>Name</th>
-            <th>Email</th>
+            {{-- <th>Email</th> --}}
             <th>Mobile</th>
             {{-- <th>Status</th> --}}
             <th>Balance</th>
+            <th>Employee Balance</th>
 
             <th>Joining Date</th>
           </tr>
@@ -71,7 +72,7 @@
             @endif
             </td>
             <td>{{ $user->name }}</td>
-            <td>{{ $user->email }}</td>
+            {{-- <td>{{ $user->email }}</td> --}}
             <td>{{ $user->mobile }}</td>
           {{-- <td>
             @if($user->active)
@@ -94,6 +95,7 @@
               {{ $user->totalBalance() }}
               @endif
               </td>
+              <td> {{ $user->employee_balance }}</td>
   
             {{-- <td>
               

@@ -27,6 +27,7 @@
                             <th>  {{__('orderdashboard.change_status')}}</th>
                             <th>  {{__('orderdashboard.order_status')}}</th>
                             <th>  {{__('orderdashboard.delivery_man')}}</th>
+                            <th>  {{__('orderdashboard.courier')}}</th>
                             <th>  {{__('orderdashboard.price')}}</th>
                             <th>  {{__('orderdashboard.service_profile')}}</th>
                             {{-- <th>Quantityx</th> --}}
@@ -190,6 +191,7 @@
                                      {{$order->deliveryman->name ?? ''}}
                                     @endif
                                 </td>
+                                <td><a href="{{ route('user.getCourier') }}" class="btn btn-warning btn-xs">Get Courier</a></td>
                                 <td>{{ $order->total_sale_price }}</td>
                                 <td>{{ $order->serviceProfile->name ?? '' }}</td>
                                 {{-- <td>{{ $order->total_quantity }}</td> --}}

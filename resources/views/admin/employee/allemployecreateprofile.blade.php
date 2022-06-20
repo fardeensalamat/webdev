@@ -93,13 +93,14 @@
                                         <th>SL</th>
                                         <th>Action</th>
                                         <th>Name</th>
-                                        <th>Email</th>
+                                        {{-- <th>Email</th> --}}
                                         <th>Mobile</th>
-                                        <th>SS</th>
+                                        {{-- <th>SS</th> --}}
                                         <th>Cat</th>
                                         <th>Type</th>
                                         <th>Status</th>
                                         <th>Pay Status</th>
+                                        <th>Added By</th>
                                         <th>Date</th>
 
 
@@ -142,9 +143,9 @@
                                                 </div>
                                             </td>
                                             <td>{{ ucfirst($profile->name) }}</td>
-                                            <td>{{ ucfirst($profile->user->email ?? '') }}</td>
+                                            {{-- <td>{{ ucfirst($profile->user->email ?? '') }}</td> --}}
                                             <td>{{ ucfirst($profile->user->mobile ?? '') }}</td>
-                                            <td>{{ ucfirst($profile->workstation->title ?? '') }}</td>
+                                            {{-- <td>{{ ucfirst($profile->workstation->title ?? '') }}</td> --}}
                                             <td>{{ ucfirst($profile->category->name ?? '') }}</td>
                                             <td>{{ ucfirst($profile->profile_type ?? '') }}</td>
                                             <td>
@@ -153,6 +154,7 @@
                                             <td>
                                                 {{ $profile->paystatus == 1 ? 'Paid' : 'Unpaid' }}
                                             </td>
+                                            <td>{{ ucfirst($profile->addedby->name ?? '') }}</td>
                                             <td>{{$profile->created_at}}</td>
                                             
                                         </tr>

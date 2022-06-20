@@ -58,6 +58,7 @@ class ServiceProfile extends Model
         return $this->belongsTo(Category::class, 'ws_cat_id');
     }
 
+
     public function user()
     {
         return $this->belongsTo(User::class);

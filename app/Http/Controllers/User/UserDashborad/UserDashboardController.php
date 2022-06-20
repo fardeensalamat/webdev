@@ -161,6 +161,7 @@ class UserDashboardController extends Controller
          $customerList = ValuedCustomer::all();
          $priorityList = TopPrio::all(); 
          $profilecount=ServiceProfile::where('user_id',Auth::user()->id)->count();
+         $myprofile=ServiceProfile::where('user_id',Auth::user()->id)->get();
 
         return view('user.dashboard', [
             'user' => $user,
@@ -170,7 +171,8 @@ class UserDashboardController extends Controller
             'shops' => $shops,
             'customerList' => $customerList,
             'priorityList' => $priorityList,
-            'profilecount' => $profilecount
+            'profilecount' => $profilecount,
+            'myprofile' => $myprofile
         ]);
     }
 
@@ -6101,6 +6103,16 @@ class UserDashboardController extends Controller
      
         return redirect()->route('user.MyProfileworkerlist')->with('success', 'Access Update Successfully');
     }
+
+    public function getCourier(Request $request, $id=null)
+    {
+        $data = ValuedCustomer::where('type', 'LIKE', '4')->get();
+
+        return view('user.serviceOrders.myProfileOrders.courier',compact('data'));
+             
+      
+    }
+
 
 
 
