@@ -625,6 +625,19 @@
                     </ul>
                 </li>
 
+                <!-- ---------------------fardeen code-------------------- -->
+                    <li class="nav-item has-treeview {{ session('lsbm') == 'qrlist' ? ' menu-open ' : '' }}">
+                        <a href="{{route('admin.serviceProfileQR')}}" class="nav-link ">
+                            <i class="nav-icon fas fa-qrcode nav-icon"></i>
+                            <p>
+                              
+                                {{ __('adminsidebar.service_profile_qr') }}
+
+                            </p>
+                        </a>
+                    </li>
+                <!-- ---------------------end of fardeen code-------------------- -->
+
                 @if (Auth::user()->hasPermission('service_profile'))
                     <li class="nav-item has-treeview {{ session('lsbm') == 'profilelist' ? ' menu-open ' : '' }}">
                         <a href="{{ route('admin.serviceProfilelist') }}" class="nav-link ">
@@ -1040,6 +1053,15 @@
                                   <p>{{ __('adminsidebar.speical_category') }}</p>
                               </a>
                           </li>
+                          <li class="nav-item has-treeview {{ session('lsbm') == 'delivery' ? ' menu-open ' : '' }}">
+                            <a href="{{ route('admin.listdeliveryman') }}" class="nav-link ">
+                                <i class="nav-icon fas fa fa-male nav-icon"></i>
+                                <p>
+                                    Delivery Man
+                                    {{-- <i class="right fas fa-angle-left"></i> --}}
+                                </p>
+                            </a>
+                        </li>
 
 
                       </ul>

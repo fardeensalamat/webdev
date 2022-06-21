@@ -177,6 +177,18 @@
                                                     @foreach ($deliveryman as $data)
                                                     <option value="{{$data->id}}" @if($order->deliveryman_id==$data->id) Selected @endif>{{$data->name}}</option>   
                                                     @endforeach
+                                                    <optgroup label="Cycling">
+                                                    @foreach ($cycling as $c)
+                                                    <option value="{{$c->id}}">{{$c->name}}</option>   
+                                                    @endforeach
+                                                    <optgroup label="Rider">
+                                                    @foreach ($rider as $r)
+                                                    <option value="{{$r->id}}">{{$r->name}}</option>   
+                                                    @endforeach
+                                                    <optgroup label="Walking">
+                                                    @foreach ($walking as $w)
+                                                    <option value="{{$w->id}}">{{$w->name}}</option>   
+                                                    @endforeach
                                                     
                                                     
                                                 </select>

@@ -87,6 +87,7 @@ return [
     'add_top_priority' => 'Add Top Priority',
     'top_priority_list' => 'Top Priority List',
     'applicationlist' => 'Application List',
+    'service_profile_qr' =>'Service Profile QR'
      
 
 

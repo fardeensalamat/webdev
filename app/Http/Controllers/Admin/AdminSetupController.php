@@ -17,6 +17,7 @@ use App\Models\SpecialCategory;
 use App\Models\WorkStation;
 use App\Models\ValuedCustomer;
 use App\Models\TopPrio;
+use App\Models\DeliveryMan;
 use App\Models\ServiceProfile;
 use App\Models\SoftcomApplicantCategory;
 use GuzzleHttp\Exception\GuzzleException;
@@ -24,6 +25,7 @@ use Facade\FlareClient\Http\Response;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Cookie;
 use DateTime;
+use Image;
 
 class AdminSetupController extends Controller
 {
@@ -487,6 +489,172 @@ class AdminSetupController extends Controller
             'datas' => $datas
         ]);
     }
+
+    public function listdeliveryman()
+    {
+        menuSubmenu('variations', 'delivery');
+        // $user = Auth::user();
+        $data = DeliveryMan::latest()->paginate(5);
+
+        return view('admin.deliveryman.index',compact('data'));
+    }
+
+    public function createdeliveryman()
+    {
+        menuSubmenu('variations', 'delivery');
+        return view('admin.deliveryman.create');
+    }
+
+    public function storedeliveryman(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            //'phone' => 'required |unique:deliverymans,phone',
+            'nid' => 'required',
+        ]);
+       
+        $data = new DeliveryMan;
+        $data->name = $request->name;
+        $data->phone = $request->phone;
+        $data->type = $request->type;
+        $data->email = $request->email;
+        $data->nid = $request->nid;
+        $data->address = $request->address;
+        $data->area = $request->area;
+        
+
+        //dd($request->profile_image);
+      
+        if ($pi = $request->profile_image) {
+            $f = 'user/deliveryman/' . $data->profile_image;
+            if (Storage::disk('public')->exists($f)) {
+                Storage::disk('public')->delete($f);
+            }
+            $extension = strtolower($pi->getClientOriginalExtension());
+            $randomFileName = $data->id . '_profileimg_' . date('Y_m_d_his') . '_' . rand(10000000, 99999999) . '.' . $extension;
+
+            list($width, $height) = getimagesize($pi);
+            $mime = $pi->getClientOriginalExtension();
+            $size = $pi->getSize();
+
+            $originalName = strtolower($pi->getClientOriginalName());
+
+            Storage::disk('public')->put('user/deliveryman/' . $randomFileName, File::get($pi));
+
+            $data->profile_image = $randomFileName;
+            $data->save();
+        }
+
+        if ($ni = $request->nid_image) {
+            $f = 'user/deliveryman/' . $data->nid_image;
+            if (Storage::disk('public')->exists($f)) {
+                Storage::disk('public')->delete($f);
+            }
+            $extension1 = strtolower($ni->getClientOriginalExtension());
+            $randomFileName = $data->id . '_nidimg_' . date('Y_m_d_his') . '_' . rand(10000000, 99999999) . '.' . $extension1;
+
+            list($width, $height) = getimagesize($ni);
+            $mime = $ni->getClientOriginalExtension();
+            $size = $ni->getSize();
+
+            $originalName = strtolower($ni->getClientOriginalName());
+
+            Storage::disk('public')->put('user/deliveryman/' . $randomFileName, File::get($ni));
+
+            $data->nid_image = $randomFileName;
+            $data->save();
+        }
+        $data->save();
+       
+        return redirect()->route('admin.listdeliveryman')->with('success', 'Delivery Man Added Successfully');
+        
+    }
+    public function editdeliveryman($id)
+    {
+        menuSubmenu('delivery', 'delivery');
+        $data = DeliveryMan::find($id);
+        return view('admin.deliveryman.edit',compact('data')); 
+    }
+
+    public function updatedeliveryman(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'phone' => 'required',
+            'nid' => 'required',
+        ]);
+        $data = DeliveryMan::where('id',$request->id)->first();
+        $data->name = $request->name;
+        $data->phone = $request->phone;
+        $data->email = $request->email;
+        $data->type = $request->type;
+        $data->nid = $request->nid;
+        $data->address = $request->address;
+        $data->area = $request->area;
+        $data->save();
+        if ($pi = $request->profile_image) {
+            $f = 'user/deliveryman/' . $data->profile_image;
+          
+            if (Storage::disk('public')->exists($f)) {
+                Storage::disk('public')->delete($f);
+            }
+            $extension = strtolower($pi->getClientOriginalExtension());
+            $randomFileName = $data->id . '_profileimg_' . date('Y_m_d_his') . '_' . rand(10000000, 99999999) . '.' . $extension;
+
+            list($width, $height) = getimagesize($pi);
+            $mime = $pi->getClientOriginalExtension();
+            $size = $pi->getSize();
+
+            $originalName = strtolower($pi->getClientOriginalName());
+            
+            Image::make($pi)->fit(160, 160, function ($constraint) {
+                $constraint->aspectRatio();
+            })->save( Storage::disk('public')->put('user/deliveryman/' . $randomFileName, File::get($pi)));
+
+           
+
+            $data->profile_image = $randomFileName;
+            $data->save();
+        }
+
+        if ($ni = $request->nid_image) {
+            $f = 'user/deliveryman/' . $data->nid_image;
+            if (Storage::disk('public')->exists($f)) {
+                Storage::disk('public')->delete($f);
+            }
+            $extension = strtolower($ni->getClientOriginalExtension());
+            $randomFileName = $data->id . '_nidimg_' . date('Y_m_d_his') . '_' . rand(10000000, 99999999) . '.' . $extension;
+
+            list($width, $height) = getimagesize($ni);
+            $mime = $ni->getClientOriginalExtension();
+            $size = $ni->getSize();
+
+            $originalName = strtolower($ni->getClientOriginalName());
+
+            Image::make($ni)->fit(160, 160, function ($constraint) {
+                $constraint->aspectRatio();
+            })->save( Storage::disk('public')->put('user/deliveryman/' . $randomFileName, File::get($ni)));
+
+            $data->nid_image = $randomFileName;
+            $data->save();
+        }
+        return redirect()->route('admin.listdeliveryman')->with('success', 'Delivery Man Update Successfully');
+    }
+
+
+    public function deletedeliveryman($id)
+    {
+        $data = DeliveryMan::where('id',$id)->first();
+        $f = 'user/deliveryman/' . $data->image;
+        if (Storage::disk('public')->exists($f)) {
+            Storage::disk('public')->delete($f);
+        }
+        $data->delete();
+        return redirect()->route('admin.listdeliveryman')->with('success', 'Delivery Man Delete Successfully');
+        
+    }
+
+
 
 
 }

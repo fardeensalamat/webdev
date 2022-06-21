@@ -739,7 +739,7 @@
                                                 <a href="{{$profiles->website_link}}" target="_blank">
                 
                                                     <img src="{{ route('imagecache', ['template' => 'pfism', 'filename' => $profiles->fi()]) }}"
-                                                        width="130" class="rounded mb-2 img-thumbnail" @if ($profiles->category->business_type == 'service')
+                                                        width="130" class="rounded mb-2 img-thumbnail" @if ($profiles->category->business_type ?? '' == 'service')
                                                     style="border-radius: 50% !important"
                                                 @endif>
                                                 </a>
@@ -750,7 +750,7 @@
                                                 <a href="{{ route('welcome.profileShare', ['profile' => $profiles->id, 'reffer' => $subscriber->subscription_code]) }}">
                 
                                                     <img src="{{ route('imagecache', ['template' => 'pfism', 'filename' => $profiles->fi()]) }}"
-                                                        width="130" class="rounded mb-2 img-thumbnail" @if ($profiles->category->business_type == 'service')
+                                                        width="130" class="rounded mb-2 img-thumbnail" @if ($profiles->category->business_type ?? '' == 'service')
                                                     style="border-radius: 50% !important"
                                                 @endif>
                                             </a>
@@ -772,7 +772,7 @@
                                                     <br><br><br>
                                                         
                                                     @else
-                                                    @if ($profiles->category->business_type == 'service')
+                                                    @if ($profiles->category->business_type ?? '' == 'service')
                                                             <li class="list-inline-item">
                                                                 <h5 class="font-weight-bold mb-0 d-block">
                                                                     {{ $profiles->totalServiceItems() }}

@@ -49,6 +49,8 @@
                                                 href="{{ route('user.myServicesprofileUpdate', ['profile' => $profile->id,'open'=>"open"]) }}">Open</a>
                                         @endif
                                             @endif
+                                            <a class="btn btn-warning btn-xs"
+                                            href="{{ route('subscriber.myProfileEdit', ['subscription' => $profile->ownerSubscription->subscription_code, 'profile' => $profile->id]) }}">Edit</a>
                                         </td>
                                         <td><a
                                                 href="{{ route('subscriber.myProfileDetails', ['subscription' => $profile->ownerSubscription->subscription_code, 'profile_type' => $profile->profile_type,'id'=>$profile->id]) }}">{{ $profile->name }}</a>

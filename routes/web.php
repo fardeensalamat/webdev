@@ -1359,6 +1359,20 @@ Route::get('profile/review/rating/delete/{id}', [
 
     //Complain or Suggessions END
 
+     //Image start
+     Route::get('user/media/all', [
+        'uses' => 'User\UserDashborad\UserDashboardController@userMediaAll',
+        'as' => 'user.mediaAll'
+    ]);
+    //Image End
+
+    //Get Image
+    Route::get('user/get/media/all{id}', [
+        'uses' => 'User\UserDashborad\UserDashboardController@getImage',
+        'as' => 'getImage'
+    ]);
+    //Get Image End
+
 
     //Get Auto lat lng in user Table End
     //Date 10-04-2021 Start
@@ -2514,6 +2528,14 @@ Route::get('dashborad/tenentinformation/{type}', [
         'as' => 'admin.adminnotificationsdetails'
     ]);
 
+    //-----------fardeen code-------------------
+        Route::get('service/profile/QR/list', [
+            'uses' => 'Admin\AdminController@serviceProfileQR',
+            'as' => 'admin.serviceProfileQR'
+        ]);
+
+
+    //-----------end fardeen code---------------
     //Social Groups Start
     Route::get('social/groups', [
         'uses' => 'Admin\AdminController@socialGroups',
@@ -3622,6 +3644,42 @@ Route::get('admin/employee/employeereport/delete/{id}', [
         'uses' => 'Admin\AdminSetupController@storeEditedTopPriority',
         'as' => 'admin.storeEditedTopPriority'
     ]);
+
+    //----------Delivery Man Start ----------------//
+
+    Route::get('admin/deliveryman/index', [
+        'uses' => 'Admin\AdminSetupController@listdeliveryman',
+        'as' => 'admin.listdeliveryman'
+    ]);
+
+    Route::get('admin/deliveryman/index/create', [
+        'uses' => 'Admin\AdminSetupController@createdeliveryman',
+        'as' => 'admin.createdeliveryman'
+    ]);
+
+    Route::post('user/product/deliveryman/store/', [
+        'uses' => 'Admin\AdminSetupController@storedeliveryman',
+        'as' => 'admin.storedeliveryman'
+    ]);
+
+    Route::get('admin/deliveryman/index/delete/{id}', [
+        'uses' => 'Admin\AdminSetupController@deletedeliveryman',
+        'as' => 'admin.deletedeliveryman'
+    ]);
+
+    Route::get('admin/deliveryman/index/edit/{id}', [
+        'uses' => 'Admin\AdminSetupController@editdeliveryman',
+        'as' => 'admin.editdeliveryman'
+    ]);
+
+
+    Route::post('admin/deliveryman/index/update/{id}', [
+        'uses' => 'Admin\AdminSetupController@updatedeliveryman',
+        'as' => 'admin.updatedeliveryman'
+    ]);
+    
+
+
 
 
 

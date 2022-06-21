@@ -73,6 +73,7 @@ use App\Models\ValuedCustomer;
 use App\Models\SoftcomApplicantCategory;
 use App\Jobs\CreatePostpaidAccount;
 Use Image;
+use App\Models\Media;
 
 
 class UserDashboardController extends Controller
@@ -3069,8 +3070,11 @@ class UserDashboardController extends Controller
         $myProfileIds = ServiceProfile::where('user_id', Auth::id())->where('profile_type', 'business')->pluck('id');
         $orders = ServiceProductOrder::whereIn('service_profile_id', $myProfileIds)->orderBy('id', 'DESC')->paginate(30);
         $deliveryman=DeliveryMan::where('user_id',$user->id)->get();
+        $walking=DeliveryMan::where('type', 'LIKE', "Walking")->get();
+        $rider=DeliveryMan::where('type', 'LIKE', "Rider")->get();
+        $cycling=DeliveryMan::where('type', 'LIKE', "Cycling")->get();
 
-        return view('user.serviceOrders.myProfileOrders.myProfileOrders', compact('orders', 'user','deliveryman'));
+        return view('user.serviceOrders.myProfileOrders.myProfileOrders', compact('orders', 'user','deliveryman','walking','rider','cycling'));
     }
     public function myProfileOrderDetails(Request $request)
     {
@@ -3954,7 +3958,7 @@ class UserDashboardController extends Controller
                 'workstation' => ['required'],
                 'category' => ['required'],
                 'address' => ['required'],
-                'img' => ['mimes:jpeg,jpg,png|required'],
+                'img' => ['required'],
                 'location' => ['required']
             ]
         );
@@ -4140,7 +4144,7 @@ class UserDashboardController extends Controller
 
             Image::make($cp)->fit(160, 160, function ($constraint) {
                 $constraint->aspectRatio();
-            })->save(storage_path('app/public/user/profile/' . $randomFileName));
+            })->save(Storage::disk('public')->put('user/profile/' . $randomFileName, File::get($cp)));
 
             $profile->img_name = $randomFileName;
             $profile->save();
@@ -4165,7 +4169,7 @@ class UserDashboardController extends Controller
 
             Image::make($cp)->fit(958, 168, function ($constraint) {
                 $constraint->aspectRatio();
-            })->save(storage_path('app/public/user/profile/cover/' . $randomFileName));
+            })->save(Storage::disk('public')->put('user/profile/' . $randomFileName, File::get($cp)));
 
             $profile->cover_image = $randomFileName;
             $profile->save();
@@ -6113,6 +6117,95 @@ class UserDashboardController extends Controller
       
     }
 
+     //----------fardeen----------//
+     public function userMediaAll(Request $request)
+     {
+         $search = $request['search_category'] ?? "";
+ 
+         $searchGoogle = Category::find($search);
+ 
+        
+ 
+         $search2 = $request['search_workstation'] ?? "";
+ 
+ 
+         if(!Auth::user()->hasPermission('page'))
+         {
+             abort(401);
+         }
+ 
+         if($search != ""){
+           
+ 
+             $allWorkStation = WorkStation::get();
+             $allCategory = Category::get();        
+             $request->session()->forget(['lsbm','lsbsm']);
+             $request->session()->put(['lsbm'=>'media','lsbsm'=>'mediaAll']);
+             $mediaAll = Media::where('category', $search)->orWhere('workstation', $search2)->paginate(50);
+          
+ 
+             
+            
+         }else{
+             $allWorkStation = WorkStation::get();
+             $allCategory = Category::get();        
+             $request->session()->forget(['lsbm','lsbsm']);
+             $request->session()->put(['lsbm'=>'media','lsbsm'=>'mediaAll']);
+             $mediaAll = Media::latest()->paginate(50);
+         
+ 
+            
+         } 
+           return view('user.media.mediaAll',['mediaAll'=>$mediaAll,'allWorkStation'=>$allWorkStation,'allCategory'=>$allCategory,'search'=>$search,'search2'=>$search2,'searchGoogle'=> $searchGoogle]);
+         
+       
+     }
+
+
+    public function getImage(Request $request, $id=null)
+    {
+       
+
+        $search = $id;
+
+        $searchGoogle = Category::find($search);
+
+       
+
+        $search2 = $request['search_workstation'] ?? "";
+
+
+        if(!Auth::user()->hasPermission('page'))
+        {
+            abort(401);
+        }
+
+        if($search != ""){
+          
+
+            $allWorkStation = WorkStation::get();
+            $allCategory = Category::get();        
+            $request->session()->forget(['lsbm','lsbsm']);
+            $request->session()->put(['lsbm'=>'media','lsbsm'=>'mediaAll']);
+            $mediaAll = Media::where('category', $search)->orWhere('workstation', $search2)->paginate(50);
+         
+
+            
+           
+        }else{
+            $allWorkStation = WorkStation::get();
+            $allCategory = Category::get();        
+            $request->session()->forget(['lsbm','lsbsm']);
+            $request->session()->put(['lsbm'=>'media','lsbsm'=>'mediaAll']);
+            $mediaAll = Media::latest()->paginate(50);
+        
+
+           
+        } 
+          return view('user.media.mediaAll',['mediaAll'=>$mediaAll,'allWorkStation'=>$allWorkStation,'allCategory'=>$allCategory,'search'=>$search,'search2'=>$search2,'searchGoogle'=> $searchGoogle]);
+        
+      
+    }
 
 
 

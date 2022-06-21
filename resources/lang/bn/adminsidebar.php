@@ -86,6 +86,7 @@ return [
     'add_top_priority' => 'অ্যাড টপ প্রায়োরিটি',
     'top_priority_list' => 'টপ প্রায়োরিটি লিস্ট',
     'applicationlist' => 'Application List',
+    'service_profile_qr' =>'Service Profile QR',
 
 
 

@@ -11,6 +11,7 @@
  */
 
 return array (
+  3511 => 'NOS',
   351609 => 'NOS',
   35163 => 'NOS',
   35165 => 'NOS',
@@ -43,6 +44,7 @@ return array (
   3519292 => 'NOS',
   3519293 => 'NOS',
   3519294 => 'NOS',
+  3519295 => 'Sumamovil Portugal',
   35193 => 'NOS',
   35196 => 'MEO',
 );

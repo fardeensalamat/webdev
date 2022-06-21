@@ -710,7 +710,7 @@ class ServiceProductCartController extends Controller
     $admin=User::Where('id','2')->first();
 
     if($order->payment_status == 'cashon' && $order->order_status == 'pending'){
-      if ($commission > $me->balance) {
+      if ($commission > $me->welcome_balance && $commission > $me->balance) {
         return redirect()->back()->with('warning', 'Insufficient balance.If You Change this order status, You need to added '.$commission.' Tk. For Your soft wallet');
       }else{
 

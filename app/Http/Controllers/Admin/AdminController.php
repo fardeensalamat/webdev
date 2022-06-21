@@ -4158,6 +4158,29 @@ class AdminController extends Controller
         
     }
 
+    //------------fardeen code-----------------//
+
+    public function serviceProfileQR(Request $request)
+    {
+        $subscription = Subscriber::where('subscription_code', $request->subscription)->first();
+        if (!$subscription) {
+            abort(404);
+        } 
+          
+            $profile = ServiceProfile::all();
+
+        menuSubmenu('qrlist', 'qrlist');
+            
+        return view('admin.subcribers.profileqrcode', [
+            'subscription' => $subscription,
+            'profile' => $profile
+        ]);
+    }
+
+
+
+    //-----------end of fardeen code --------------------//
+
    
 
 
