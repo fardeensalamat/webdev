@@ -6,6 +6,7 @@ use App\Http\Controllers\OnlinePaymentController;
 use App\Http\Controllers\User\UserDashborad\UserDashboardController;
 use App\Http\Controllers\XmlSitemapController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +23,42 @@ use Illuminate\Support\Facades\Route;
 //    // \Artisan::call('storage:link');
 //    return view('welcome');
 //});
+
+
+
+Route::get('/test', [TestController::class, 'index']);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Route::get('/', ['uses' => 'AutocompleteSearchController@index', 'as' => 'user.user.user']);
 
@@ -3378,6 +3415,14 @@ Route::get('suggession-complain/chat/{chat}', [
     'uses' => 'User\UserDashborad\EmployeeDashboardController@EmployeeReport',
     'as' => 'user.employeeReport'
 ]);
+
+
+    Route::match(['get', 'post'],'dashboard/employee/employeereport/list/edit/{id}', [
+        'uses' => 'User\UserDashborad\EmployeeDashboardController@EmployeeReportUpdate',
+        'as' => 'user.employeeReport.edit'
+    ]);
+
+
 
 Route::get('dashboard/employee/employeereport/add', [
     'uses' => 'User\UserDashborad\EmployeeDashboardController@EmployeeReportAdd',

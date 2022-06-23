@@ -53,6 +53,8 @@
                                 <div class="bg-light p-4 d-flex justify-content-end text-center">
                                     @if ($business_type == 'shop')
                                         <ul class="list-inline mb-0">
+
+
                                             <li class="list-inline-item">
                                                 <h5 class="font-weight-bold mb-0 d-block">
                                                     {{ count($profile->products->where('status', 'approved')->where('active', true)) }}
@@ -143,7 +145,7 @@
                                                                     <div class="card-body p-0 text-center">
                                                                         <a class="w3-small"
                                                                             href="{{ route('welcome.productShare', ['product' => $item->id, 'reffer' => $subscription->subscription_code, 'profile' => $profile->id]) }}">
-                
+
                                                                             <img src=" {{ route('imagecache', ['template' => 'pnism', 'filename' => $item->fi()]) }}"
                                                                                 class="card-image img-fluid rounded-top w-100" alt=""
                                                                                 srcset="">
@@ -163,12 +165,12 @@
                                                                                 @if ($item->sale_price)
                                                                                     <span class="w3-small w3-text-deep-orange">BDT
                                                                                         {{ $item->sale_price }}</span>
-                
+
                                                                                     @if ($item->deleted_price) <span class="w3-tiny w3-text-gray"> <del>{{ $item->deleted_price }}</del></span>@endif
                                                                                 @endif
-                
+
                                                                             </div>
-                
+
                                                                             <div class="col-md-12">
                                                                                 <div class="d-flex justify-content-between mt-1">
                                                                                     @if ($item->user_id != Auth::id())
@@ -178,23 +180,23 @@
                                                                                                         class="fas fa-shopping-cart w3-text-gray"></i></a>
                                                                                             </p>
                                                                                         @endif
-                
+
                                                                                         <p class="m-0">
                                                                                             <a
                                                                                                 href="{{ route('subscriber.addWishlistServiceProfileProduct', ['product' => $item->id]) }}">
-                
+
                                                                                                 @if ($item->isMyWishlisted())
                                                                                                     <i class="fas fa-heart w3-text-red"></i>
                                                                                                 @else
                                                                                                     <i
                                                                                                         class="fas fa-heart w3-text-gray"></i>
                                                                                                 @endif
-                
-                
+
+
                                                                                             </a>
                                                                                         </p>
                                                                                     @endif
-                
+
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -206,14 +208,14 @@
                                                     {{ $service_product->render() }}
                                                 @empty
                                                 @endforelse
-                
-                
+
+
                                             </div>
                                         </div>
                                     </div>
                                 @endif
                             @elseif ($business_type== 'service')
-                
+
                                 <div class="row">
                                     @foreach ($service_items as $item)
                                         <div class="card mt-2">
@@ -233,7 +235,7 @@
                                                                 href="{{ route('welcome.serviceItemShare', ['profile' => $profile->id, 'reffer' => $subscription->subscription_code, 'item' => $item->id]) }}">
                                                                 {{ $item->title }}
                                                         </h4>
-                                                        
+
                                                         </a>
                                                         <p class="m-0 p-0">{{ $item->excerpt }}</p>
                                                         @if (Auth::check())
@@ -244,9 +246,9 @@
                                                                     <a href="" class="btn btn-info btn-sm">Pay Now</a>
                                                                 @endif
                                                             @endif
-                
+
                                                         @endif
-                                                        
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -258,11 +260,11 @@
                             </div>
                         </div>
 
-                        
+
                     </div>
                 </div>
             </div>
-            
+
 
         </div>
     </div>

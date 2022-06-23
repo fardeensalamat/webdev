@@ -150,7 +150,9 @@ class WelcomeController extends Controller
                     //     return "Sp Price getter then Orderd Price";
                     // }
 
-                    return view('subscriber.profile.findProfileDetails', [
+                    //subscriber.profile.findProfileDetails theme.prt.profileDetailsLatest
+
+                    return view('theme.prt.profileDetailsLatest', [
                         'subscription' => $subscription,
                         'profile' => $profile,
                         'visitor' => $visitors,
@@ -244,7 +246,8 @@ class WelcomeController extends Controller
                     // $my_orders = ServiceProductOrder::where('user_id', Auth::id())->where('service_profile_id', $profile->id)->get();
                     $my_order_count = ServiceProductOrder::where('user_id', Auth::id())->where('service_profile_id', $profile->id)->count();
                     // return $my_order_count;
-                    return view('subscriber.profile.findProfileDetails', [
+
+                    return view('theme.prt.profileDetailsLatest', [
                         'subscription' => $s,
                         'profile' => $profile,
                         'visitor' => $visitors,

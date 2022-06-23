@@ -390,6 +390,7 @@
                         </div>
                     </div>
                 </div>
+
             @elseif ($business_type == 'service')
                 <div class="col-md-10 m-auto">
                     @include('alerts.alerts')
@@ -444,7 +445,7 @@
                                             <small class="text-muted">Add To Fv</small>
                                         </a>
                                     </li>
-                                   
+
                                 </ul>
                             </div>
                             <div class="px-4 py-3">
@@ -725,7 +726,7 @@
 
                         </div>
                     </div>
-                   
+
                     <div class="card card-widget">
                         <div class="card-header"><b>Recent Items</b></div>
                         <div class="card-body w3-light-gray">
@@ -737,7 +738,11 @@
                         </div>
                     </div>
                 </div>
-            @else
+
+
+                 @else
+
+
                 <div class="col-md-8 m-auto">
                     <div class="card card-default">
                         <div class="card-header"
@@ -1047,7 +1052,7 @@
                             @endif
                         </div>
                     </div>
-                   
+
                     {{-- <div class="card-footer"
                         style="background-color: {{ $profile->category ? $profile->category->sp_footer_bg_color : '' }}!important;color: {{ $profile->category ? $profile->category->sp_footer_text_color : '' }}">
                         <p>© Copyright {{ date('Y') }} | {{ $_SERVER['SERVER_NAME'] }}</p>
@@ -1059,7 +1064,7 @@
                 <div class="card card-widget">
                     <div class="card-header"><b>Post A Review And Rating</b></div>
                     <div class="card-body w3-light-gray">
-                        
+
                         <form action="{{ route('user.ratingstore') }}" enctype="multipart/form-data" method="POST">
                             @csrf
                             <input type="hidden" name="profile_id" value="{{$profile->id}}">
@@ -1076,31 +1081,31 @@
                                 <input type="submit" class="btn btn-info">
                             </div>
                         </form>
-    
+
 
                     </div>
                     <div class="card-header"><b> Rating And Review </b></div>
                     <div class="card-body w3-light-gray">
                         <style>
-                           
-                          
-                            
+
+
+
                             .heading {
                               font-size: 18px;
                               margin-right: 18px;
                             }
-                            
+
                             .fa {
                               font-size: 18px;
                             }
-                            
+
                             .checked {
                               color: orange;
                             }
-                            
-                          
-                            
-                           
+
+
+
+
                             </style>
                         @foreach($rating as $rate)
 
