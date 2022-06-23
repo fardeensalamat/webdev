@@ -216,7 +216,7 @@
             var urls = url + '?q=' + q;
 
 
-      
+
 
             delay(function() {
                 $.ajax({
@@ -239,6 +239,8 @@
         });
         //////////////////////admin search end //////////////////
     </script>
+
+
     <script type="text/javascript">
         window.onload = function() {
             getLocation()
@@ -253,7 +255,7 @@
 
             } else {
 
-                // alert( "Oops, Geolocation API is not supported");        
+                // alert( "Oops, Geolocation API is not supported");
             }
         }
 
@@ -284,8 +286,8 @@
                         if (response.success) {
                             $("#lati").val(response.lat);
                             $("#long").val(response.lng);
+                            console.log(response);
                         }
-
                     }
                 });
             }
@@ -296,7 +298,7 @@
 
         });
     </script>
-   
+
 
 </body>
 

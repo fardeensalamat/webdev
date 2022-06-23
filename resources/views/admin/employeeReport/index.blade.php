@@ -1,4 +1,4 @@
-@extends('user.layouts.userMaster')
+@extends('admin.layouts.adminMaster')
 
 @section('content')
     <section class="content">
@@ -15,7 +15,7 @@
                         <h3 class="card-title">
                           Admin Panel:  {{__('employeeReport.employeereport')}}
                         </h3>
-                       
+
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -27,13 +27,16 @@
                                 <thead>
                                     <tr>
                                         <th>{{__('employeeReport.sl')}}</th>
+                                        <th>Name</th>
+                                        <th>Start Image</th>
+                                        <th>End Image</th>
+                                        <th>Start Time/Location</th>
+                                        <th>End Time/Location</th>
                                         <th>{{__('employeeReport.type')}}</th>
-                                        <th>{{__('employeeReport.date')}}</th>
-                                        <th>{{__('employeeReport.note')}}</th>
-                                        <th>{{__('employeeReport.specialnote')}}</th>
-                                        <th>{{__('employeeReport.userid')}}</th>
+                                        <th>Date</th>
+
                                         <th>{{__('employeeReport.action')}}</th>
-        
+
                                     </tr>
                                 </thead>
 
@@ -41,7 +44,7 @@
 
                                 <?php $i = 1; ?>
 
-                                
+
 
                                 @foreach ($datas as $data)
 
@@ -49,27 +52,40 @@
                                     <tr>
 
                                         <td>{{ $i }}</td>
+                                        <td>{{ $data->user->name ?? ''}}</td>
+                                        <td><img class="img-fluid" src="{{ route('imagecache', ['template' => 'ppmd', 'filename' => $data->er()]) }}" alt=""></td>
+                                        <td><img class="img-fluid" src="{{ route('imagecache', ['template' => 'ppmd', 'filename' => $data->erl()]) }}" alt=""></td>
+
+                                        <td>{{$data->created_at->format('g:i:s A')}} / {{$data->start_location}}</td>
+                                        @if($data->status != 'start')
+                                        <td>{{$data->updated_at->format('g:i:s A')}}/{{$data->end_location}}</td>
+                                        @else
+                                            <td></td>
+                                        @endif
+
                                         <td>{{ $data->type }}</td>
                                         <td>{{ $data->date }}</td>
-                                        <td>{{ $data->note }}</td>
-                                        <td>{{ $data->special_note }}</td>
-                                       <td>{{ $data->user->name}}</td>
-                                        <td> <a class="btn btn-danger btn-xs" href="{{route('admin.deleteEmployeeReport',$data->id)}}">Delete</a></td>
-                                       
+
+                                        <td>
+                                            <a class="btn btn-success btn-xs" href="{{route('admin.deleteEmployeeReport',$data->id)}}">Edit</a><br>
+
+                                            <a class="btn btn-danger btn-xs" href="{{route('admin.deleteEmployeeReport',$data->id)}}">Delete</a>
+                                        </td>
+
 
                                     </tr>
 
                                     <?php $i++; ?>
 
                                 @endforeach
-                        
 
-                                  
+
+
                                 </tbody>
 
                             </table>
 
-                     
+
 
                         </div>
 
@@ -82,7 +98,7 @@
 
 
 
-        
+
     </section>
 @endsection
 
@@ -90,7 +106,7 @@
 @push('js')
 
 
-    
+
 
 @endpush
 

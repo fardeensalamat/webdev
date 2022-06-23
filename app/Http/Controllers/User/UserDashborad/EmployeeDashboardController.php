@@ -90,7 +90,7 @@ class EmployeeDashboardController extends Controller
         $user = User::where('id',$request->user)->first();
         $date = $request->date;
         if ($type == 'all_create_profile_date') {
-            
+
             menuSubmenu('employee', 'employee');
             $start = $request->date_from;
             $end = $request->date_to;
@@ -103,56 +103,56 @@ class EmployeeDashboardController extends Controller
                 ->paginate(50);
 
            }else{
-            
+
                 if($date == 'today')
                 {
-                       $profiles = ServiceProfile::where('addedby_id',$user->id)->where('paystatus',$request->paystatus)->whereDate('created_at',Carbon::today()->toDateString())->orderBy('id','desc')->latest()->paginate(50);                
-                   
+                       $profiles = ServiceProfile::where('addedby_id',$user->id)->where('paystatus',$request->paystatus)->whereDate('created_at',Carbon::today()->toDateString())->orderBy('id','desc')->latest()->paginate(50);
+
                 }
                 elseif($date == 'yesterday')
                 {
                     $profiles = ServiceProfile::where('addedby_id',$user->id)->where('paystatus',$request->paystatus)->whereDate('created_at',Carbon::yesterday()->toDateString())->orderBy('id','desc')->latest()->paginate(50);
-            
+
                 }
                 elseif($date == 7)
                 {
                     $end = Carbon::now()->toDateString();
                     $start = Carbon::now()->subDays(6)->toDateString();
-                    
+
                     $profiles = ServiceProfile::where('addedby_id',$user->id)->where('paystatus',$request->paystatus)->whereBetween('created_at',[$start,$end])->latest()->paginate(50);
                 }
-        
+
                 elseif($date == 30)
                 {
                     $end = Carbon::now()->toDateString();
                     $start = Carbon::now()->subDays(29)->toDateString();
                     $profiles = ServiceProfile::where('addedby_id',$user->id)->where('paystatus',$request->paystatus)->whereBetween('created_at',[$start,$end])->orderBy('id','desc')->latest()->paginate(50);
-                   
+
                 }
                 elseif($date == 'this_month')
                 {
-                   
+
                     $profiles = ServiceProfile::where('addedby_id',$user->id)->where('paystatus',$request->paystatus)->whereYear('created_at',date('Y'))->whereMonth('created_at', date('m'))->orderBy('id','desc')
-                    ->latest()->paginate(50);   
-                   
-        
-        
+                    ->latest()->paginate(50);
+
+
+
                 }
                 elseif($date == 'last_month')
                 {
-                    $previous =  Carbon::now()->subMonth(); 
-                    $lastMonthYear =  $previous->format('Y'); 
-                    $lastMonth =  $previous->format('m'); 
-                    $profiles = ServiceProfile::where('addedby_id',$user->id)->where('paystatus',$request->paystatus)->whereYear('created_at',$lastMonthYear)->whereMonth('created_at',  $lastMonth)->orderBy('id','desc')->latest()->paginate(50);                
+                    $previous =  Carbon::now()->subMonth();
+                    $lastMonthYear =  $previous->format('Y');
+                    $lastMonth =  $previous->format('m');
+                    $profiles = ServiceProfile::where('addedby_id',$user->id)->where('paystatus',$request->paystatus)->whereYear('created_at',$lastMonthYear)->whereMonth('created_at',  $lastMonth)->orderBy('id','desc')->latest()->paginate(50);
                 }else{
-                    $profiles = ServiceProfile::where('addedby_id',$user->id)->where('paystatus',$request->paystatus)->orderBy('id','desc')->latest()->paginate(50); 
+                    $profiles = ServiceProfile::where('addedby_id',$user->id)->where('paystatus',$request->paystatus)->orderBy('id','desc')->latest()->paginate(50);
 
                 }
            }
-          
+
             $total=$profiles->count();
 
-            
+
            $start=new DateTime($start);
            $end=new DateTime($end);
 
@@ -167,8 +167,8 @@ class EmployeeDashboardController extends Controller
                 'date'=>$date
             ]);
         }
-       
-      
+
+
 
         return back();
     }
@@ -178,20 +178,26 @@ class EmployeeDashboardController extends Controller
         menuSubmenu('categories', 'categories');
         $user = Auth::user();
        $categories =Category::orderBy('name', 'asc')->get();
-       
+
        return view('user.employee.categorylist', [
             'user' => $user,
             'categories' => $categories
         ]);
-       
+
     }
 
     public function EmployeeReport()
     {
         menuSubmenu('employee_report', 'employee_report');
-        $datas = EmployeeReport::all(); 
+
+        $datas = EmployeeReport::where('user_id', Auth::id())->get();
+
         return view('user.employeeReport.index',compact('datas'));
     }
+
+
+
+
 
     public function EmployeeReportAdd()
     {
@@ -200,39 +206,142 @@ class EmployeeDashboardController extends Controller
     }
 
 
+    public function EmployeeReportUpdate(Request  $request, $id){
+
+        $employee = EmployeeReport::where('id', $id)->first();
+        if($request->isMethod('post')){
+
+            $validated = $request->validate([
+                'location' => 'required',
+                'photo' => 'required',
+            ]);
+
+            $image =$request->photo;
+            $imageInfo = explode(";base64,", $image);
+//            print_r($imageInfo);
+            $imgExt = str_replace('data:image/', '', $imageInfo[0]);
+            $image = str_replace(' ', '+', $imageInfo[1]);
+            $imageName = $employee->id. '_employeereportimg_' . date('Y_m_d_his') . '_' . rand(10000000, 99999999).".".$imgExt;
+
+
+            Storage::disk('public')->put('employeereport/' .$imageName, base64_decode($image));
+
+
+
+
+
+
+//            if ($pi = $request->image) {
+//                $extension = strtolower($pi->getClientOriginalExtension());
+//                $randomFileName = $employee->id. '_employeereportimg2_' . date('Y_m_d_his') . '_' . rand(10000000, 99999999) . '.' . $extension;
+//
+//                list($width, $height) = getimagesize($pi);
+//                $mime = $pi->getClientOriginalExtension();
+//                $size = $pi->getSize();
+//
+//                $originalName = strtolower($pi->getClientOriginalName());
+//
+//
+////                dd('ok');
+//
+//                Storage::disk('public')->put('employeereport/' . $randomFileName, File::get($pi));
+//
+////                return redirect()->route('user.employeeReport');
+//            }
+
+
+            EmployeeReport::where('id', $id)->update(['end_location'=> $request->location, 'end_lat'=> $request->last_lat, 'end_lng' => $request->last_lng, 'last_image' => $imageName, 'status' => 'Done']);
+            return redirect()->route('user.employeeReport');
+        }
+        return  view('user.employeeReport.editReport', compact('employee'));
+//        return redirect()->back();
+
+    }
+
+
     public function EmployeeReportStore(Request $request)
     {
+        $validated = $request->validate([
+            'location' => 'required',
+            'photo' => 'required',
+        ]);
+
         $userNew = new EmployeeReport();
-        
+
         $userNew->type = $request->type;
         $userNew->date = $request->date;
         $userNew->note = $request->note;
         $userNew->special_note = $request->special_note;
         $userNew->user_id = Auth::user()->id;
-
-        if ($pi = $request->image) {
-            $f = 'employeereport/' . $userNew->image;
-            if (Storage::disk('public')->exists($f)) {
-                Storage::disk('public')->delete($f);
-            }
-            $extension = strtolower($pi->getClientOriginalExtension());
-            $randomFileName = $userNew->id. '_employeereportimg_' . date('Y_m_d_his') . '_' . rand(10000000, 99999999) . '.' . $extension;
-    
-            list($width, $height) = getimagesize($pi);
-            $mime = $pi->getClientOriginalExtension();
-            $size = $pi->getSize();
-    
-            $originalName = strtolower($pi->getClientOriginalName());
-    
-            Storage::disk('public')->put('employeereport/' . $randomFileName, File::get($pi));
-    
-            $userNew->image = $randomFileName;
-            
-             $userNew->save();
-        }
-     
-
+        $userNew->start_location = $request->location;
+        $userNew->start_lat = $request->start_lat;
+        $userNew->start_lng = $request->start_lng;
+        $userNew->status = 'start';
         $userNew->save();
+
+
+
+//        $image =$request->photo;
+//        $imageInfo = explode(";base64,", $image);
+//        print_r($imageInfo);
+//        $imgExt = str_replace('data:image/', '', $imageInfo[0]);
+//        $image = str_replace(' ', '+', $imageInfo[1]);
+//        $imageName = "post-".time().".".$imgExt;
+//        $size = $image->getSize();
+//        print_r(base64_decode($size));die;
+
+
+
+        if ($pi = $request->photo) {
+
+
+//            $f = 'employeereport/' . $userNew->image;
+//            if (Storage::disk('public')->exists($f)) {
+//                Storage::disk('public')->delete($f);
+//            }
+
+//
+
+
+
+            $image =$request->photo;
+            $imageInfo = explode(";base64,", $image);
+//            print_r($imageInfo);
+            $imgExt = str_replace('data:image/', '', $imageInfo[0]);
+            $image = str_replace(' ', '+', $imageInfo[1]);
+            $imageName = $userNew->id. '_employeereportimg_' . date('Y_m_d_his') . '_' . rand(10000000, 99999999).".".$imgExt;
+
+
+
+
+
+
+
+            Storage::disk('public')->put('employeereport/' .$imageName, base64_decode($image));
+
+//
+//            $extension = strtolower($pi->getClientOriginalExtension());
+//            $randomFileName = $userNew->id. '_employeereportimg_' . date('Y_m_d_his') . '_' . rand(10000000, 99999999) . '.' . $extension;
+
+//            list($width, $height) = getimagesize($pi);
+//            $mime = $pi->getClientOriginalExtension();
+//            $size = $pi->getSize();
+//
+//            $originalName = strtolower($pi->getClientOriginalName());
+
+
+
+
+
+
+          //  Storage::disk('public')->put('employeereport/' . $randomFileName, File::get($pi));
+
+            $userNew->image = $imageName;
+            $userNew->save();
+
+        }
+
+
     	return redirect()->route('user.employeeReport');
 
     }
@@ -242,12 +351,12 @@ class EmployeeDashboardController extends Controller
         menuSubmenu('myteam', 'myteam');
         $user = Auth::user();
         $employeeAll =User::where('group_id',  $user->id)->latest()->paginate(20);
-       
+
        return view('user.employee.myteam', [
             'user' => $user,
             'employeeAll' => $employeeAll
         ]);
-       
+
     }
 
 
@@ -259,7 +368,7 @@ class EmployeeDashboardController extends Controller
             ->where('id', $request->user)
             ->firstOrFail();
 
-    
+
 
 
         if ($type == 'all_create_profile') {
@@ -294,7 +403,7 @@ class EmployeeDashboardController extends Controller
             if (!Auth::user()->hasPermission('employee')) {
                 abort(401);
             }
-            
+
             $start = $request->date_from;
             $end = $request->date_to;
             $paystatus=$request->paystatus;
@@ -307,113 +416,113 @@ class EmployeeDashboardController extends Controller
                     ->whereBetween('created_at',[$start,$end])
                     ->latest()->paginate(50);
 
-          
+
                 if($date == 'today')
                 {
-                       $profiles = ServiceProfile::where('addedby_id',$user->id)->where('is_trial',$request->paystatus)->whereDate('created_at',Carbon::today()->toDateString())->orderBy('id','desc')->latest()->paginate(50);                
-                   
+                       $profiles = ServiceProfile::where('addedby_id',$user->id)->where('is_trial',$request->paystatus)->whereDate('created_at',Carbon::today()->toDateString())->orderBy('id','desc')->latest()->paginate(50);
+
                 }
                 elseif($date == 'yesterday')
                 {
                     $profiles = ServiceProfile::where('addedby_id',$user->id)->where('is_trial',$request->paystatus)->whereDate('created_at',Carbon::yesterday()->toDateString())->orderBy('id','desc')->latest()->paginate(50);
-            
+
                 }
                 elseif($date == 7)
                 {
                     $end = Carbon::now()->toDateString();
                     $start = Carbon::now()->subDays(6)->toDateString();
-                    
+
                     $profiles = ServiceProfile::where('addedby_id',$user->id)->where('is_trial',$request->paystatus)->whereBetween('created_at',[$start,$end])->latest()->paginate(50);
                 }
-        
+
                 elseif($date == 30)
                 {
                     $end = Carbon::now()->toDateString();
                     $start = Carbon::now()->subDays(29)->toDateString();
                     $profiles = ServiceProfile::where('addedby_id',$user->id)->where('is_trial',$request->paystatus)->whereBetween('created_at',[$start,$end])->orderBy('id','desc')->latest()->paginate(50);
-                   
+
                 }
                 elseif($date == 'this_month')
                 {
-                   
+
                     $profiles = ServiceProfile::where('addedby_id',$user->id)->where('is_trial',$request->paystatus)->whereYear('created_at',date('Y'))->whereMonth('created_at', date('m'))->orderBy('id','desc')
-                    ->latest()->paginate(50);   
-                   
-        
-        
+                    ->latest()->paginate(50);
+
+
+
                 }
                 elseif($date == 'last_month')
                 {
-                    $previous =  Carbon::now()->subMonth(); 
-                    $lastMonthYear =  $previous->format('Y'); 
-                    $lastMonth =  $previous->format('m'); 
-                    $profiles = ServiceProfile::where('addedby_id',$user->id)->where('is_trial',$request->paystatus)->whereYear('created_at',$lastMonthYear)->whereMonth('created_at',  $lastMonth)->orderBy('id','desc')->latest()->paginate(50);                
+                    $previous =  Carbon::now()->subMonth();
+                    $lastMonthYear =  $previous->format('Y');
+                    $lastMonth =  $previous->format('m');
+                    $profiles = ServiceProfile::where('addedby_id',$user->id)->where('is_trial',$request->paystatus)->whereYear('created_at',$lastMonthYear)->whereMonth('created_at',  $lastMonth)->orderBy('id','desc')->latest()->paginate(50);
                 }else{
-                    $profiles = ServiceProfile::where('addedby_id',$user->id)->where('is_trial',$request->paystatus)->orderBy('id','desc')->latest()->paginate(50);                
+                    $profiles = ServiceProfile::where('addedby_id',$user->id)->where('is_trial',$request->paystatus)->orderBy('id','desc')->latest()->paginate(50);
 
                 }
-        
+
 
             }else{
                 $profiles =ServiceProfile::where('addedby_id',$user->id)->where('paystatus',$request->paystatus)
                     ->whereBetween('created_at',[$start,$end])
                     ->latest()->paginate(50);
 
-          
+
                 if($date == 'today')
                 {
-                       $profiles = ServiceProfile::where('addedby_id',$user->id)->where('paystatus',$request->paystatus)->whereDate('created_at',Carbon::today()->toDateString())->orderBy('id','desc')->latest()->paginate(50);                
-                   
+                       $profiles = ServiceProfile::where('addedby_id',$user->id)->where('paystatus',$request->paystatus)->whereDate('created_at',Carbon::today()->toDateString())->orderBy('id','desc')->latest()->paginate(50);
+
                 }
                 elseif($date == 'yesterday')
                 {
                     $profiles = ServiceProfile::where('addedby_id',$user->id)->where('paystatus',$request->paystatus)->whereDate('created_at',Carbon::yesterday()->toDateString())->orderBy('id','desc')->latest()->paginate(50);
-            
+
                 }
                 elseif($date == 7)
                 {
                     $end = Carbon::now()->toDateString();
                     $start = Carbon::now()->subDays(6)->toDateString();
-                    
+
                     $profiles = ServiceProfile::where('addedby_id',$user->id)->where('paystatus',$request->paystatus)->whereBetween('created_at',[$start,$end])->latest()->paginate(50);
                 }
-        
+
                 elseif($date == 30)
                 {
                     $end = Carbon::now()->toDateString();
                     $start = Carbon::now()->subDays(29)->toDateString();
                     $profiles = ServiceProfile::where('addedby_id',$user->id)->where('paystatus',$request->paystatus)->whereBetween('created_at',[$start,$end])->orderBy('id','desc')->latest()->paginate(50);
-                   
+
                 }
                 elseif($date == 'this_month')
                 {
-                   
+
                     $profiles = ServiceProfile::where('addedby_id',$user->id)->where('paystatus',$request->paystatus)->whereYear('created_at',date('Y'))->whereMonth('created_at', date('m'))->orderBy('id','desc')
-                    ->latest()->paginate(50);   
-                   
-        
-        
+                    ->latest()->paginate(50);
+
+
+
                 }
                 elseif($date == 'last_month')
                 {
-                    $previous =  Carbon::now()->subMonth(); 
-                    $lastMonthYear =  $previous->format('Y'); 
-                    $lastMonth =  $previous->format('m'); 
-                    $profiles = ServiceProfile::where('addedby_id',$user->id)->where('paystatus',$request->paystatus)->whereYear('created_at',$lastMonthYear)->whereMonth('created_at',  $lastMonth)->orderBy('id','desc')->latest()->paginate(50);                
+                    $previous =  Carbon::now()->subMonth();
+                    $lastMonthYear =  $previous->format('Y');
+                    $lastMonth =  $previous->format('m');
+                    $profiles = ServiceProfile::where('addedby_id',$user->id)->where('paystatus',$request->paystatus)->whereYear('created_at',$lastMonthYear)->whereMonth('created_at',  $lastMonth)->orderBy('id','desc')->latest()->paginate(50);
                 }else{
-                    $profiles = ServiceProfile::where('addedby_id',$user->id)->where('paystatus',$request->paystatus)->orderBy('id','desc')->latest()->paginate(50);                
+                    $profiles = ServiceProfile::where('addedby_id',$user->id)->where('paystatus',$request->paystatus)->orderBy('id','desc')->latest()->paginate(50);
 
                 }
-        
+
             }
-                
+
 
 
 
 
                 $total=$profiles->count();
 
-            
+
            $start=new DateTime($start);
            $end=new DateTime($end);
 
@@ -433,7 +542,7 @@ class EmployeeDashboardController extends Controller
     }
 
 
-   
-    
-    
+
+
+
 }
