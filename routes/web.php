@@ -3598,6 +3598,14 @@ Route::get('admin/employee/employeereport/delete/{id}', [
     'as' => 'admin.deleteEmployeeReport'
 ]);
 
+
+    Route::get('admin/employee/employeereport/edit/{id}', [
+        'uses' => 'Admin\AdminController@editEmployeeReport',
+        'as' => 'admin.editEmployeeReport'
+    ]);
+
+
+
      Route::get('admin/addvaluedcustomer', [
         'uses' => 'Admin\AdminSetupController@addValuedCustomers',
         'as' => 'admin.addValuedCustomer'

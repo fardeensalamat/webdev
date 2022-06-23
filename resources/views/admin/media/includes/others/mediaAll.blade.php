@@ -10,7 +10,7 @@
 
 <div class="media border ">
 	<div class="w3-display-container">
-  <img src="{{asset($media->file_url)}}" alt="John Doe" class="mr-1   rounded" style="width:100px;">
+  <img src="{{asset($media->file_url)}}" alt="John Doe" class="mr-1   rounded" style="width:100px; height: 100px;">
 
   <div class="w3-display-topright"><a onclick="return confirm('Do you really want to delete this media?');" style="margin-right: 4px;margin-top: 3px;" class="btn btn-default btn-xs" title="Delete" href="{{route('admin.mediaDelete',$media)}}"><i class="fa fa-times"></i></a></div>
 
@@ -19,8 +19,8 @@
     {{-- <h4> <small>{{url('/'.$media->file_url)}}</small></h4> --}}
     <p>
     Orig.Name: {{$media->file_original_name}} <br>
-				    Size: {{$media->file_size}}, 
-				    Width: {{$media->width}}px, 
+				    Size: {{$media->file_size}},
+				    Width: {{$media->width}}px,
 				    Height: {{$media->height}}px <br>
 
 				    <small> {{url('/'.$media->file_url)}}  </small> <br>
@@ -32,8 +32,8 @@
 
 
 
-					 
-						
+
+
 					</div>
 				</div>
 		</div>
@@ -45,4 +45,4 @@
 	{{$mediaAll->render()}}
 </div>
 
-@endif 
+@endif
