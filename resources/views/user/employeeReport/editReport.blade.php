@@ -1,7 +1,6 @@
 @extends('user.layouts.userMaster')
 
 @section('content')
-    <br>
 
     <style>
         #video {
@@ -54,11 +53,12 @@
         }
 
     </style>
+    <br>
     <section class="content">
         @include('alerts.alerts')
         <div class="card bg-info">
             <div class="card-body">
-                <h3>{{__('employeeReport.add_report')}}</h3>
+                <h3>Update Report</h3>
             </div>
         </div>
         <div class="container">
@@ -66,58 +66,14 @@
                 <div class="col-md-12 m-auto">
                     <div class="card">
                         <div class="card-body">
-                            <form action="{{ route('user.storeemployeereport') }}" method="POST" id='my-form' enctype="multipart/form-data">
+                            <form action="{{ route('user.employeeReport.edit', $employee->id) }}" method="POST" enctype="multipart/form-data">
                                 @csrf
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="type">{{__('employeeReport.type')}}</label>
 
-                                              <select id="inputState" class="form-control" name="type">
-                                                     <option>Official</option>
-                                                     <option>Marketing</option>
-                                              </select>
-
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="type">Date</label>
-                                            <input  type="date" class="form-control" name="date">
-
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="title">{{__('employeeReport.note')}}</label><br>
-                                            <textarea name="note" type="text" class="form-control" id="" cols="45" rows="3"></textarea>
-
-
-                                        </div>
-
-
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="title">{{__('employeeReport.specialnote')}}</label><br>
-                                            <textarea name="special_note" type="text" class="form-control" id="" cols="45" rows="3"></textarea>
-
-                                        </div>
-                                    </div>
-
-
-                                </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
 {{--                                            <label for="photo" class="media" onclick="getLocations()">Open Camera</label>--}}
 {{--                                            <input type="file" name="image" accept="image/*" capture="camera" id="photo" >--}}
-
 
 
                                             <input type="hidden" name="photo" id="image" >
@@ -128,25 +84,24 @@
 
                                             </div>
 
-                                                <canvas id="canvas" >
+                                            <canvas id="canvas" >
 
-                                                </canvas>
+                                            </canvas>
 
 
                                             <div id="output"  style="display: none !important;">
                                                 <img id="photo" alt="The screen capture will appear in this box.">
                                             </div>
-
-
                                         </div>
 
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="location">Location</label>
-                                            <input type="text" name="location" id="location" readonly class="form-control">
-                                            <input type="hidden" name="start_lat" id="start_lat">
-                                            <input type="hidden" name="start_lng" id="start_lng">
+                                            <input type="text" name="location" id="locations" readonly class="form-control">
+                                            <input type="hidden" name="last_lat" id="last_lat">
+                                            <input type="hidden" name="last_lng" id="last_lng">
+
                                         </div>
 
                                     </div>
@@ -165,9 +120,6 @@
                 </div>
             </div>
 
-
-
-
             <style>
                 input[type="file"]{
                     display: none;
@@ -185,6 +137,7 @@
 
         </div>
     </section>
+
 
     <script>
         (function() {
@@ -320,6 +273,8 @@
     </script>
 
 
+
+
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDHDmzYhDx3eLGS-WFobnapHpUA8JfTAoA&sensor=false"></script>
     <script>
 
@@ -349,7 +304,7 @@
                 // console.log(let[1] , let[2])
                 // document.getElementById("test").innerHTML = '' + (results[0].formatted_address); + '';
 
-                document.getElementById("location").value = lets[1]+ lets[2];
+                document.getElementById("locations").value = lets[1]+ lets[2];
 
             });
         }
@@ -366,8 +321,8 @@
             }
         }
         function showPosition(position) {
-            document.getElementById("start_lat").value = position.coords.latitude;
-            document.getElementById("start_lng").value = position.coords.longitude;
+            document.getElementById("last_lat").value = position.coords.latitude;
+            document.getElementById("last_lng").value = position.coords.longitude;
             initialize();
             codeLatLng(position.coords.latitude, position.coords.longitude);
 

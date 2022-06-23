@@ -1,526 +1,301 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
-use Auth;
-use Mail;
-use Hash;
-use Event;
-use Cache;
-use Str;
-use Cookie;
-use Validator;
-use Carbon\Carbon;
-use App\Models\User;
-use App\Models\UserRole;
-use App\Models\Subscriber;
-use App\Models\Category;
 use Illuminate\Http\Request;
-use App\Models\FreelancerJob; 
+use App\Models\ServiceProfileProduct;
 use App\Models\ServiceProfile;
-use App\Models\SubcriberPayment;
-use Illuminate\Support\Facades\File;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Storage;
-use Intervention\Image\ImageManagerStatic as Image;
+use App\Models\Serviceitem;
+use App\Models\FreelancerJob;
+use App\Models\Subscriber;
+use App\Models\Courseitem;
+use Auth;
+use Hash;
+use Session;
+use Validator;
+use DB;
+use App\Models\HomeShortCartFavorite;
+use App\Models\HomeShortCart;
+use App\Helps\Getipaddress;
 
-class AdminSearchController extends Controller
+class AutocompleteSearchController extends Controller
 {
 
-    public function searchAjax(Request $request)
+    public function autosearch(Request $request)
     {
-        $type = $request->type;
-        $page = '';
-        $q = $request->q;
-        $status = $request->status;
 
-        // if($type == 'product')
-        // {
-        //     $products = Product::where('status', '<>','temp')
-        //     ->where(function($query) use ($q) {
-        //         $query->where('id', 'like', "%{$q}%");
-        //         $query->orWhere('title', 'like', "%{$q}%");
-        //     })
+        $subscription = Subscriber::where('user_id',Auth::id())->first();
 
-        //     ->where(function($qq) {
-        //         if($st = request()->status)
-        //         {
-        //             if($st == 'active')
-        //             {
-        //                 $qq->where('active',1);
-        //             }
-        //             elseif($st == 'inactive')
-        //             {
-        //                 $qq->where('active', 0);
-        //             }
-        //             elseif($st == 'stockout')
-        //             {
-        //                 $qq->where('quantity', '<', 1);
-        //             }
-        //             elseif($st == 'stocked')
-        //             {
-        //                 $qq->where('quantity', '>', 0);
-        //             }
-        //         }
-        //     })
-            
-        //     ->latest()->paginate(100);
-
-        //     $page = View('admin.products.includes.productsAll',['products' =>$products, 'q'=>$q, 'status'=>$status])->render();
-        // }
-
-        // if($type == 'category')
-        // {
-
-        //     $categories = ProductCategory::where(function($query) use ($q) {
-        //         $query->where('id', 'like', "%{$q}%");
-        //         $query->orWhere('title', 'like', "%{$q}%");
-        //     })
-            
-        //     ->latest()->paginate(100);
-
-        //     $page = View('admin.attributes.category.categoryAll',['categories' =>$categories, 'q'=>$q])->render();
-        // }
-
-        // if($type == 'subcategory')
-        // {
-
-        //     $subcategories = ProductSubcategory::where(function($query) use ($q) {
-        //         $query->where('id', 'like', "%{$q}%");
-        //         $query->orWhere('title', 'like', "%{$q}%");
-        //     })
-            
-        //     ->latest()->paginate(100);
-
-        //     $page = View('admin.attributes.subcategory.subcategoryAll',['subcategories' =>$subcategories, 'q'=>$q])->render();
-        // }
-
-        // if($type == 'subsubcategory')
-        // {
-
-        //     $subsubcategories = ProductSubsubcategory::where(function($query) use ($q) {
-        //         $query->where('id', 'like', "%{$q}%");
-        //         $query->orWhere('title', 'like', "%{$q}%");
-        //     })
-            
-        //     ->latest()->paginate(100);
-
-        //     $page = View('admin.attributes.subsubcategory.subsubcategoryAll',['subsubcategories' =>$subsubcategories, 'q'=>$q])->render();
-        // }
-
-        // if($type == 'brand')
-        // {
-        //     $data = ProductBrand::where(function($query) use ($q) {
-        //         $query->where('id', 'like', "%{$q}%");
-        //         $query->orWhere('title', 'like', "%{$q}%");
-        //     })
-            
-        //     ->latest()->paginate(100);
-
-        //     $page = View('admin.attributes.brand.brandAll',['brands' =>$data, 'q'=>$q])->render();
-
-            
-        // }
-
-
-        // if($type == 'color')
-        // {
-        //     $data = Color::where(function($query) use ($q) {
-        //         $query->where('id', 'like', "%{$q}%");
-        //         $query->orWhere('title', 'like', "%{$q}%");
-        //     })
-            
-        //     ->latest()->paginate(100);
-
-        //     $page = View('admin.attributes.color.colorAll',['colors' =>$data, 'q'=>$q])->render();
-
-            
-        // }
-
-        // if($type == 'size')
-        // {
-        //     $data = Size::where(function($query) use ($q) {
-        //         $query->where('id', 'like', "%{$q}%");
-        //         $query->orWhere('title', 'like', "%{$q}%");
-        //     })
-            
-        //     ->latest()->paginate(100);
-
-        //     $page = View('admin.attributes.size.sizeAll',['sizes' =>$data, 'q'=>$q])->render();
-
-            
-        // }
-
-        // if($type == 'coupon')
-        // {
-        //     $data = Coupon::where(function($query) use ($q) {
-        //         $query->where('id', 'like', "%{$q}%");
-        //         $query->orWhere('coupon_code', 'like', "%{$q}%");
-        //     })
-
-        //     ->where('status', '<>', 'temp')
-            
-        //     ->latest()->paginate(100);
-
-        //     $page = View('admin.coupons.couponsAll',['coupons' =>$data, 'q'=>$q])->render();
-
-            
-        // }
-
-        // if($type == 'order')
-        // {
-        //     $data = Order::where(function($query) use ($q) {
-        //         $query->where('id', 'like', "%{$q}%");
-        //         $query->orWhere('transaction_id', 'like', "%{$q}%");
-        //         $query->orWhere('mobile', 'like', "%{$q}%");
-        //         $query->orWhere('email', 'like', "%{$q}%");
-        //     }) 
-
-        //     ->where(function($qq) use ($status) {
-
-        //         if($status)
-        //         {
-        //             $qq->where('order_status', $status);
-        //         }
-        //     })
-
-        //     ->latest()->paginate(100);
-
-        //     $page = View('admin.orders.ordersAll',['orders' =>$data, 'q'=>$q, 'status' => $status])->render();
-
-            
-        // }
-        
-        // if($type == 'return')
-        // {
-        //     $data = OrderReturn::where(function($query) use ($q) {
-        //         $query->where('id', 'like', "%{$q}%");
-        //         $query->orWhere('invoice_number', 'like', "%{$q}%");
-        //     }) 
-
-        //     ->where(function($qq) use ($status) {
-
-        //         if($status)
-        //         {
-        //             $qq->where('status', $status);
-        //         }
-        //     })
-
-        //     ->latest()->paginate(100);
-
-        //     $page = View('admin.orders.returnsAll',['returns' =>$data, 'q'=>$q, 'status' => $status])->render();
-
-            
-        // }
-
-        // if($type == 'seller')
-        // {
-        //     $data = Seller::where(function($query) use ($q) {
-        //         $query->where('id', 'like', "%{$q}%");
-        //         $query->orWhere('title', 'like', "%{$q}%");
-        //         $query->orWhere('mobile', 'like', "%{$q}%");
-        //         // $query->orWhere('email', 'like', "%{$q}%");
-        //     })
-
-        //     ->where(function($query) use ($status){
-
-        //     if($status == 'active')
-        //     {
-        //         $query->where('active', true);
-        //     }
-        //     if($status == 'inactive')
-        //     {
-        //         $query->where('active', false);
-        //     }
-
-        //     if($status == 'pending')
-        //     {
-        //         $query->where('status', 'pending');
-        //     }
-
-        //     if($status == 'approved')
-        //     {
-        //         $query->where('status', 'approved');
-        //     }
-
-        //     if($status == 'suspended')
-        //     {
-        //         $query->where('status', 'suspended');
-        //     }
-
-        // })->latest()->paginate(100);
-
-        //     $page = View('admin.seller.sellersAll',['sellers' =>$data, 'q'=>$q, 'status' => $status])->render();
-
-            
-        // }
-
-
-        if($type == 'user')
-        {
-            $data = User::withoutGlobalScopes()->where(function($query) use ($q) {
-                $query->where('id', 'like', "%{$q}%");
-                $query->orWhere('name', 'like', "%{$q}%");
-                $query->orWhere('mobile', 'like', "%{$q}%");
-                // $query->orWhere('email', 'like', "%{$q}%");
-            })
-
-            ->where(function($query) use ($status){
-
-            if($status == 'active')
-            {
-                $query->where('active', true);
-            }
-            if($status == 'inactive')
-            {
-                $query->where('active', false);
+        if ($request->ajax()) {
+            $output = '';
+            if($request->name==''){
+                $keyword='.';
+            }else{
+                $keyword=$request->name;
             }
 
-             
+            $data = ServiceProfileProduct::where('name','LIKE',$keyword.'%')->where('status', 'approved')->where('active', true)->limit(5)->get();
 
-        })->latest()->paginate(100)->appends(['q'=>$q,'status'=>$status,'type'=>$type]);
+            $data1 = ServiceProfile::where('name','LIKE',$keyword.'%')->where('profile_type', 'business')
+                    ->where('status', 1)
+                    ->limit(5)->get();
 
-            $page = View('admin.users.ajax.users_all',['usersAll' =>$data, 'q'=>$q, 'status' => $status])->render();
+            $data3 = FreelancerJob::where('status',null)->where('category_id', '!=' , 20)
+                    ->whereNull('admin_completed_status')
+                    ->has('user')
+                    ->whereDoesntHave('works',function($qq) use ($subscription) {
+                        $qq->where('subscriber_id', $subscription->id);
+                    })
+                    ->whereRaw('total_worker > freelancer_jobs.work_done')
+                    ->where('title','LIKE',$keyword.'%')->limit(5)->get();
 
-            
-        }
-
-        if($type == 'employee')
-        {
-            $data = User::withoutGlobalScopes()->where('is_employee',1)->where(function($query) use ($q) {
-                $query->where('id', 'like', "%{$q}%");
-                $query->orWhere('name', 'like', "%{$q}%");
-                $query->orWhere('mobile', 'like', "%{$q}%");
-                // $query->orWhere('email', 'like', "%{$q}%");
-            })
-
-            ->where(function($query) use ($status){
-
-            if($status == 'active')
-            {
-                $query->where('active', true);
-            }
-            if($status == 'inactive')
-            {
-                $query->where('active', false);
-            }
-
-             
-
-        })->latest()->paginate(100)->appends(['q'=>$q,'status'=>$status,'type'=>$type]);
-
-            $page = View('admin.employee.ajax.employee_all',['employeeAll' =>$data, 'q'=>$q, 'status' => $status])->render();
-
-            
-        }
+            $data4 = Courseitem::where('title','LIKE',$keyword.'%')->where('status', 'approved')->where('active', true)->limit(5)->get();
+            $data5 = Serviceitem::where('title','LIKE',$keyword.'%')->where('status', 'approved')->where('active', true)->limit(5)->get();
 
 
-        if($type == 'freelancer')
-        {
-            $data = User::withoutGlobalScopes()->where('is_freelancer',1)->where(function($query) use ($q) {
-                $query->where('id', 'like', "%{$q}%");
-                $query->orWhere('name', 'like', "%{$q}%");
-                $query->orWhere('mobile', 'like', "%{$q}%");
-                // $query->orWhere('email', 'like', "%{$q}%");
-            })
-
-            ->where(function($query) use ($status){
-
-            if($status == 'active')
-            {
-                $query->where('active', true);
-            }
-            if($status == 'inactive')
-            {
-                $query->where('active', false);
-            }
-
-             
-
-        })->latest()->paginate(100)->appends(['q'=>$q,'status'=>$status,'type'=>$type]);
-
-            $page = View('admin.freelancer.ajax.freelancer_all',['freelancerAll' =>$data, 'q'=>$q, 'status' => $status])->render();
-
-            
-        }
-        if($type == 'job')
-        {
-            $data = FreelancerJob::where('id', 'like', "%{$q}%")
-            ->latest()
-            ->paginate(100)
-            ->appends(['q'=>$q,'status'=>$status,'type'=>$type]);
-
-            $page = View('admin.job.ajax.allJobs',['jobs' =>$data, 'q'=>$q, 'status' => $status])->render();
-
-            
-        }
-
-        if($type == 'jobAdmin')
-        {
-            
-            
-            $data = FreelancerJob::where('id', 'like', "%{$q}%")
-            ->latest()
-            ->paginate(100)
-            ->appends(['q'=>$q,'status'=>$status,'type'=>$type]);
-
-            $page = View('admin.job.ajax.allPostedJobModifiedByAdmin',['jobs' =>$data, 'q'=>$q, 'status' => $status, 'type'=>$value=null])->render();
-
-            
-        }
-        
-        if($type == 'subscriber')
-        {
-             $data = Subscriber::where(function($query)use($q){
-                $query->where('subscription_code', 'like', "%$q%");
-                $query->orWhere('name', 'like', "%$q%");
-                $query->orWhere('mobile', 'like', "%$q%");
-                $query->orWhere('id', 'like',"%$q%");
-                $query->orWhere('user_id', 'like',"%$q%");
-             })->latest()->paginate(100)->appends(['q'=> $q,'type'=>$type,'status'=>$status]);
-
-            $page = View('admin.subcribers.ajax.admin_subscriberAll',['subcribers' =>$data, 'q'=>$q, 'status' => $status])->render();
-
-            
-        }
-
-        if($type == 'paidshop')
-        {
-             $data = ServiceProfile::where('paystatus', true)->where(function($query)use($q){
-                $query->orWhere('name', 'like', "%$q%");
-                $query->orWhere('mobile', 'like', "%$q%");
-                $query->orWhere('id', 'like',"%$q%");
-                $query->orWhere('user_id', 'like',"%$q%");
-             })->latest()->paginate(24)->appends(['q'=> $q,'type'=>$type,'status'=>$status]);
-
-            $page = View('admin.dashboarddetails.ajax.tenantshopdetails',['profiles' =>$data, 'q'=>$q, 'status' => $status])->render();
-
-            
-        }
-        if($type == 'unpaidshop')
-        {
-             $data = ServiceProfile::where('paystatus', false)->where(function($query)use($q){
-                $query->orWhere('name', 'like', "%$q%");
-                $query->orWhere('mobile', 'like', "%$q%");
-                $query->orWhere('id', 'like',"%$q%");
-                $query->orWhere('user_id', 'like',"%$q%");
-             })->latest()->paginate(24)->appends(['q'=> $q,'type'=>$type,'status'=>$status]);
-
-            $page = View('admin.dashboarddetails.ajax.tenantshopdetails',['profiles' =>$data, 'q'=>$q, 'status' => $status])->render();
-
-            
-        }
-
-        if($type == 'serviceprofile')
-        {
-             $data = ServiceProfile::where(function($query)use($q){
-                $query->orWhere('name', 'like', "%$q%");
-                $query->orWhere('mobile', 'like', "%$q%");
-                $query->orWhere('id', 'like',"%$q%");
-                $query->orWhere('user_id', 'like',"%$q%");
-             })->latest()->paginate(24)->appends(['q'=> $q,'type'=>$type,'status'=>$status]);
-
-            $page = View('admin.profile.serviceProfilelistajax',['profiles' =>$data, 'q'=>$q, 'status' => $status])->render();
-
-            
-        }
-        
-        if($type == 'order')
-        {
-            $sp = SubcriberPayment::whereHas('user', function($qq) use($q, $status) {
-                
-                $qq->where('id', 'like', "%{$q}%");
-                $qq->orWhere('name', 'like', "%{$q}%");
-                $qq->orWhere('mobile', 'like', "%{$q}%");
-                
-                if($status == 'active')
-                {
-                    $qq->where('active', true);
+            if (count($data)>0 || count($data1)>0 || count($data3)>0 ||count($data4)>0 || count($data5)>0) {
+                $output = '<ul class="list-group" style="display: block; position: relative; z-index: 1">';
+                foreach ($data as $row) {
+                    $output .= '<a href="'.route('welcome.productShare', ['profile' => $row->service_profile_id, 'product' => $row->id, 'reffer' => $row->subscription->subscription_code]).'"><li class="list-group-item">'.$row->name.' <sub style="text-color:#808080">Product</sub></a></li>';
                 }
-                if($status == 'inactive')
-                {
-                    $qq->where('active', false);
+                foreach ($data1 as $row1) {
+                    $output .= '<a href="'.route('welcome.profileShare', ['profile' => $row1->id, 'reffer' => $row1->ownerSubscription->subscription_code]) .'"><li class="list-group-item">'.$row1->name.' <sub style="text-color:#808080">Service Profile</sub></a></li>';
                 }
-            })
-            
-           
 
-            ->where(function($query) use ($status){
+                foreach ($data3 as $row3) {
+                    $output .= '<a href="'.route('subscriber.freelanceJobDetails', ['freelanceJob' => $row3, 'subscription' => $subscription->subscription_code]).'"><li class="list-group-item">'.$row3->title.' <sub>Work</sub></a></li>';
+                }
 
-            if($status == 'paid')
-            {
-                $query->where('status', 'paid');
+                foreach ($data4 as $row4) {
+                    $output .= '<a href="'.route('welcome.courseShare', ['product'=>$row4->id,'profile'=>$row4->serviceProfile->id,'reffer'=>$row4->subscriber->subscription_code]).'"><li class="list-group-item">'.$row4->title.' <sub>Course</sub></a></li>';
+                }
+                foreach ($data5 as $row5) {
+                    $output .= '<a href="'.route('welcome.serviceItemShare', ['item'=>$row5->id,'profile'=>$row5->serviceProfile->id,'reffer'=>$row5->subscriber->subscription_code]).'"><li class="list-group-item">'.$row5->title.' <sub>Service Item</sub></a></li>';
+                }
+                $output .= '</ul>';
+            }else {
+
             }
-            if($status == 'pending')
-            {
-                $query->where('status', 'pending');
-            }
-
-             
-
-        })
-            ->latest()
-            ->orderBy('status')
-            ->paginate(100)
-            ->appends(['q'=>$q,'type'=>$type,'status'=>$status]);
-
-            $page = View('admin.orders.ajax.paymentOrdersAll',['payments' =>$sp, 'q'=>$q, 'status' => $status])->render();
-
-            
+            return $output;
         }
+        return view('autosearch');
+    }
 
-        if($type == 'role')
-        {
-            $data = User::has('roles')
-                ->where(function($query) use ($q) {
-                $query->where('id', 'like', "%{$q}%");
-                $query->orWhere('name', 'like', "%{$q}%");
-                $query->orWhere('mobile', 'like', "%{$q}%");
-                $query->orWhere('email', 'like', "%{$q}%");
-            })
 
-            ->where(function($query) use ($status){
 
-            if($status == 'active')
-            {
-                $query->where('active', true);
+    // start Razib work
+
+    public function autosearchUser(Request $request)
+    {
+
+        $subscription = Subscriber::where('user_id', \Illuminate\Support\Facades\Auth::id())->first();
+//        return  response()->json($subscription);
+
+        if ($request->ajax()) {
+            $output = '';
+            if($request->name==''){
+                $keyword='.';
+            }else{
+                $keyword=$request->name;
             }
-            if($status == 'inactive')
-            {
-                $query->where('active', false);
+
+
+            $data = ServiceProfileProduct::where('name','LIKE',$keyword.'%')->where('status', 'approved')->where('active', true)->limit(5)->get();
+
+            $data1 = ServiceProfile::where('name','LIKE',$keyword.'%')->where('profile_type', 'business')
+                ->where('status', 1)
+                ->limit(5)->get();
+
+//            $data3 = FreelancerJob::where('status',null)->where('category_id', '!=' , 20)
+//                    ->whereNull('admin_completed_status')
+//                    ->has('user')
+//                    ->whereDoesntHave('works',function($qq) use ($subscription) {
+//                        $qq->where('subscriber_id', $subscription->id);
+//                    })
+//                    ->whereRaw('total_worker > freelancer_jobs.work_done')
+//                    ->where('title','LIKE',$keyword.'%')->limit(5)->get();
+//
+//            $data4 = Courseitem::where('title','LIKE',$keyword.'%')->where('status', 'approved')->where('active', true)->limit(5)->get();
+//            $data5 = Serviceitem::where('title','LIKE',$keyword.'%')->where('status', 'approved')->where('active', true)->limit(5)->get();
+
+
+            if (count($data)>0 || count($data1)>0 ) { //            || count($data3)>0 ||count($data4)>0 || count($data5)>0
+                $output = '<ul class="list-group" style="display: block; position: relative; z-index: 1">';
+
+
+                foreach ($data as $row) {
+
+                    $output .= '<a target="_blank" href="' . route('welcome.productShare', ['profile' => $row->service_profile_id, 'product' => $row->id, 'reffer' => $row->subscription->subscription_code]) . '"><li class="list-group-item" data-url="' . route('welcome.productShare', ['profile' => $row->service_profile_id, 'product' => $row->id, 'reffer' => $row->subscription->subscription_code]) . '">' . $row->name . ' <sub style="text-color:#808080">Product</sub></a></li>';
+
+                }
+                foreach ($data1 as $row1) {
+                    $output .= '<a target="_blank" href="' . route('welcome.profileShare', ['profile' => $row1->id, 'reffer' => $row1->ownerSubscription->subscription_code]) . '"><li class="list-group-item">' . $row1->name . ' <sub style="text-color:#808080">Service Profile</sub></a></li>';
+
+
+                }
+
+//                foreach ($data3 as $row3) {
+//                    $output .= '<a href="'.route('subscriber.freelanceJobDetails', ['freelanceJob' => $row3, 'subscription' => $subscription->subscription_code]).'"><li class="list-group-item">'.$row3->title.' <sub>Work</sub></a></li>';
+//                }
+//
+//                foreach ($data4 as $row4) {
+//                    $output .= '<a href="'.route('welcome.courseShare', ['product'=>$row4->id,'profile'=>$row4->serviceProfile->id,'reffer'=>$row4->subscriber->subscription_code]).'"><li class="list-group-item">'.$row4->title.' <sub>Course</sub></a></li>';
+//                }
+//                foreach ($data5 as $row5) {
+//                    $output .= '<a href="'.route('welcome.serviceItemShare', ['item'=>$row5->id,'profile'=>$row5->serviceProfile->id,'reffer'=>$row5->subscriber->subscription_code]).'"><li class="list-group-item">'.$row5->title.' <sub>Service Item</sub></a></li>';
+//                }
+                $output .= '</ul>';
+            }else {
+
             }
 
-             
 
-        })->latest()->paginate(100)->appends(['q'=>$q,'type'=>$type,'status'=>$status]);
 
-            $page = View('admin.users.admin_usersAll',['users' =>$data, 'q'=>$q, 'status' => $status])->render();
-
-            
+            echo $output;
         }
+//        return view('autosearch');
+    }
 
-        //category search
-        // if($type == 'categoryss')
-        // {
-        //      $data = Category::where(function($query)use($q){
-        //         $query->where('name', 'like', "%$q%");
-        //      })->latest()->paginate(100)->appends(['q'=> $q,'type'=>$type,'status'=>$status]);
 
-        //     $page = View('user.softmarkets.includes.ajaxdatacontainer',['category' =>$data, 'q'=>$q, 'status' => $status])->render();
 
-            
-        // }
-        
 
-        if($request->ajax())
-        {
-            return Response()->json(array(
-            'success' => true,
-            'type' => $type,
-            'page' => $page,
-            ));
+    public function autosearchUserProduct(Request $request)
+    {
+
+        $subscription = Subscriber::where('user_id', \Illuminate\Support\Facades\Auth::id())->first();
+//        return  response()->json($subscription);
+
+        if ($request->ajax()) {
+            $output = '';
+            if($request->name==''){
+                $keyword='.';
+            }else{
+                $keyword=$request->name;
+            }
+
+
+            $data = ServiceProfileProduct::where('name','LIKE',$keyword.'%')->where('status', 'approved')->where('active', true)->limit(5)->get();
+
+//            $data1 = ServiceProfile::where('name','LIKE',$keyword.'%')->where('profile_type', 'business')
+//                ->where('status', 1)
+//                ->limit(5)->get();
+
+//            $data3 = FreelancerJob::where('status',null)->where('category_id', '!=' , 20)
+//                    ->whereNull('admin_completed_status')
+//                    ->has('user')
+//                    ->whereDoesntHave('works',function($qq) use ($subscription) {
+//                        $qq->where('subscriber_id', $subscription->id);
+//                    })
+//                    ->whereRaw('total_worker > freelancer_jobs.work_done')
+//                    ->where('title','LIKE',$keyword.'%')->limit(5)->get();
+//
+//            $data4 = Courseitem::where('title','LIKE',$keyword.'%')->where('status', 'approved')->where('active', true)->limit(5)->get();
+//            $data5 = Serviceitem::where('title','LIKE',$keyword.'%')->where('status', 'approved')->where('active', true)->limit(5)->get();
+
+
+            if (count($data)>0  ) { //            || count($data3)>0 ||count($data4)>0 || count($data5)>0
+                $output = '<ul class="list-group" style="display: block; position: relative; z-index: 1">';
+
+
+                foreach ($data as $row) {
+
+                    $output .= '<a target="_blank" href="' . route('welcome.productShare', ['profile' => $row->service_profile_id, 'product' => $row->id, 'reffer' => $row->subscription->subscription_code]) . '"><li class="list-group-item" data-url="' . route('welcome.productShare', ['profile' => $row->service_profile_id, 'product' => $row->id, 'reffer' => $row->subscription->subscription_code]) . '">' . $row->name . ' <sub style="text-color:#808080">Product</sub></a></li>';
+
+                }
+//                foreach ($data1 as $row1) {
+//                    $output .= '<a target="_blank" href="' . route('welcome.profileShare', ['profile' => $row1->id, 'reffer' => $row1->ownerSubscription->subscription_code]) . '"><li class="list-group-item">' . $row1->name . ' <sub style="text-color:#808080">Service Profile</sub></a></li>';
+//
+//
+//                }
+
+//                foreach ($data3 as $row3) {
+//                    $output .= '<a href="'.route('subscriber.freelanceJobDetails', ['freelanceJob' => $row3, 'subscription' => $subscription->subscription_code]).'"><li class="list-group-item">'.$row3->title.' <sub>Work</sub></a></li>';
+//                }
+//
+//                foreach ($data4 as $row4) {
+//                    $output .= '<a href="'.route('welcome.courseShare', ['product'=>$row4->id,'profile'=>$row4->serviceProfile->id,'reffer'=>$row4->subscriber->subscription_code]).'"><li class="list-group-item">'.$row4->title.' <sub>Course</sub></a></li>';
+//                }
+//                foreach ($data5 as $row5) {
+//                    $output .= '<a href="'.route('welcome.serviceItemShare', ['item'=>$row5->id,'profile'=>$row5->serviceProfile->id,'reffer'=>$row5->subscriber->subscription_code]).'"><li class="list-group-item">'.$row5->title.' <sub>Service Item</sub></a></li>';
+//                }
+                $output .= '</ul>';
+            }else {
+
+            }
+
+
+
+            echo $output;
+        }
+//        return view('autosearch');
+    }
+
+
+
+
+
+
+
+
+
+
+
+    public function autosearchUserShortCart(Request  $request){
+        $home_short_cart = new HomeShortCart();
+        $home_short_cart->title = $request->name;
+        $home_short_cart->url = $request->url;
+        $home_short_cart->ip_address = Getipaddress::getUserIpAddr();
+        $home_short_cart->user_id = Auth::check() ? Auth::id() : null;
+        $home_short_cart->device = Getipaddress::get_device();
+        $home_short_cart->browser = Getipaddress::get_browsers();
+        $home_short_cart->save();
+        $check = HomeShortCart::where(['ip_address'=> Getipaddress::getUserIpAddr(), 'url' => $request->url, 'title' => $request->name, 'device' => Getipaddress::get_device(), 'browser'=> Getipaddress::get_browsers()])->count();
+        if($check == 10){
+            $home_short_car = new HomeShortCartFavorite();
+            $home_short_car->title = $request->name;
+            $home_short_car->url = $request->url;
+            $home_short_car->ip_address = Getipaddress::getUserIpAddr();
+            $home_short_car->user_id = Auth::check() ? Auth::id() : null;
+            $home_short_car->device = Getipaddress::get_device();
+            $home_short_car->browser = Getipaddress::get_browsers();
+            $home_short_car->save();
         }
     }
-    
+
+
+    public function autosearchUserShortCartFavorite(Request  $request){
+        $home_short_car = new HomeShortCartFavorite();
+        $home_short_car->title = $request->name;
+        $home_short_car->url = 'https://'.$request->url;
+        $home_short_car->ip_address = Getipaddress::getUserIpAddr();
+        $home_short_car->user_id = Auth::check() ? Auth::id() : null;
+        $home_short_car->device = Getipaddress::get_device();
+        $home_short_car->browser = Getipaddress::get_browsers();
+        $home_short_car->save();
+        return redirect()->back();
+    }
+
+// end razib work
+
+
+
+    public  function index(){
+        $homeShortCart = HomeShortCartFavorite::where(['ip_address'=> Getipaddress::getUserIpAddr(),  'device' => Getipaddress::get_device(), 'browser'=> Getipaddress::get_browsers()])->orderByDesc('id')->take(7)->get();
+        return view('app_view', compact('homeShortCart'));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

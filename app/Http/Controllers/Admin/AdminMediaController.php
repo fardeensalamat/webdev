@@ -8,6 +8,8 @@ use Session;
 use Validator;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\WorkStation;
+use App\Models\Category;
 // use App\Model\Page;
 use App\Models\Media;
 use GuzzleHttp\Client;  
@@ -18,7 +20,6 @@ use Illuminate\Support\Facades\File;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use GuzzleHttp\Exception\GuzzleException;
-use Image;
 
 class AdminMediaController extends Controller
 {     
@@ -30,10 +31,13 @@ class AdminMediaController extends Controller
         {
             abort(401);
         }
+        
+        $allWorkStation = WorkStation::get();
+        $allCategory = Category::get();        
         $request->session()->forget(['lsbm','lsbsm']);
         $request->session()->put(['lsbm'=>'media','lsbsm'=>'mediaAll']);
         $mediaAll = Media::latest()->paginate(50);
-        return view('admin.media.mediaAll',['mediaAll'=>$mediaAll]);
+        return view('admin.media.mediaAll',['mediaAll'=>$mediaAll,'allWorkStation'=>$allWorkStation,'allCategory'=>$allCategory]);
     }
 
     public function mediaUploadPost(Request $request)
@@ -52,6 +56,13 @@ class AdminMediaController extends Controller
             ->with('error', 'Something Went Wrong!');
         }
 
+        $media = new Media;
+        $media->category = $request->category;
+        $media->workstation = $request->workstation;
+        $media->save();
+        
+       
+
         if($request->hasFile('files'))
             {
                 foreach($request->file('files') as $file)
@@ -63,25 +74,14 @@ class AdminMediaController extends Controller
                     $fileNewName = Str::random(4).date('ymds').'.'.$ext;
                     // $fileNewName = str_random(6).time().'.'.$ext;
                     // $fileNewName = Auth::id().'_'.date('ymdhis').'_'.rand(11,99).'.'.$ext;
-                    list($width,$height) = getimagesize($file);  
-                    
-                    // $destinationPath = public_path('/img');
-                    // $img = Image::make($file->getRealPath());
-                    // $img->resize(500, 600, function ($constraint) {
-                    //     $constraint->aspectRatio();
-                    // })->save($destinationPath.'/'.$fileNewName);
+                    list($width,$height) = getimagesize($file);                    
 
-                     Image::make($file)->fit(500, 600, function ($constraint) {
-                        $constraint->aspectRatio();
-                    })->save(storage_path('app/public/media/image/' . $fileNewName));
-   
-
-                    // Storage::disk('public')
-                    // ->put('media/image/'.$fileNewName, File::get($file));
+                    Storage::disk('public')
+                    ->put('media/image/'.$fileNewName, File::get($file));
 
                     $file_new_url = 'storage/media/image/'.$fileNewName;
 
-                    $media = new Media;                    
+                    // $media = new Media;                    
                     $media->file_name = $fileNewName;
                     $media->file_original_name = $originalName;
                     $media->file_mime = $mime;
@@ -107,6 +107,7 @@ class AdminMediaController extends Controller
             }
         
 
+        
         return back();
     }
 

@@ -18,7 +18,7 @@
 						<div class="media-body"   style=" word-wrap: break-word;word-break: break-all;">
 							{{-- <h4> <small>{{url('/'.$media->file_url)}}</small></h4> --}}
 							<p>
-								<button class="copyboard btn btn-primary btn-xs" data-text="{{url('/'.$media->file_url)}}">Copy to Clipboard</button>
+								<a class="btn btn-primary btn-xs" href="{{url('/'.$media->file_url)}}" download>Download</a>
 							</p>
 						</div>
 						</div>

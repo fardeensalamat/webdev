@@ -1,4 +1,4 @@
-@extends('user.layouts.userMaster')
+@extends('admin.layouts.adminMaster')
 
 @section('content')
     <section class="content">
@@ -27,11 +27,16 @@
                                 <thead>
                                     <tr>
                                         <th>{{__('employeeReport.sl')}}</th>
+                                        <th>Name</th>
+                                        <th>Designation</th>
+                                        <th>Image</th>
+                                        <th>Start Time/Location</th>
+                                        <th>End Time/Location</th>
                                         <th>{{__('employeeReport.type')}}</th>
                                         <th>{{__('employeeReport.date')}}</th>
                                         <th>{{__('employeeReport.note')}}</th>
                                         <th>{{__('employeeReport.specialnote')}}</th>
-                                        <th>{{__('employeeReport.userid')}}</th>
+                                       
                                         <th>{{__('employeeReport.action')}}</th>
         
                                     </tr>
@@ -48,12 +53,21 @@
 
                                     <tr>
 
-                                        <td>{{ $i }}</td>
+                                        <td>{{ $i }}</td> 
+                                        <td>{{ $data->user->name ?? ''}}</td>
+                                        <td>{{ $data->user->designation ?? ''}}</td>
+                                        <td><img class="img-fluid" src="{{ route('imagecache', ['template' => 'ppmd', 'filename' => $data->er()]) }}" alt=""></td>
+                                        <td>{{$data->created_at->format('g:i:s A')}} / {{$data->start_location}}</td>
+                                        @if($data->status != 'start')
+                                        <td>{{$data->updated_at->format('g:i:s A')}}/{{$data->end_location}}</td>
+                                        @else
+                                            <td></td>
+                                        @endif
                                         <td>{{ $data->type }}</td>
                                         <td>{{ $data->date }}</td>
                                         <td>{{ $data->note }}</td>
                                         <td>{{ $data->special_note }}</td>
-                                       <td>{{ $data->user->name}}</td>
+                                      
                                         <td> <a class="btn btn-danger btn-xs" href="{{route('admin.deleteEmployeeReport',$data->id)}}">Delete</a></td>
                                        
 

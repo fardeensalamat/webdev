@@ -4136,6 +4136,10 @@ class AdminController extends Controller
     public function deleteEmployeeReport($id=null)
     {
         $data = EmployeeReport::where('id',$id)->first();
+        $f = 'employeereport/' . $data->image;
+        if (Storage::disk('public')->exists($f)) {
+            Storage::disk('public')->delete($f);
+        }
 
         $data->delete();
         return redirect()->route('admin.employeeReport')->with('success', 'Deleted Successfully');

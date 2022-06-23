@@ -30,27 +30,45 @@
                 <div class="col-md-12">
                     <div class="card card-solid">
                         @include('alerts.alerts')
-                         
-                                    <div class="card mt-2"> 
-                                        <div class="similar-products mt-2 d-flex flex-row">
-                                            @foreach ($datas as $data)
-                                                <div class="card border p-1" style="width: 9rem;margin-right: 3px;">
-                                                    <a
-                                                        href="{{$data->link }}"><img
-                                                            src="{{ route('imagecache', ['template' => 'pfism', 'filename' => $data->vc()]) }}"
-                                                            class="card-img-top" alt="..."></a>
-                
-                                                    <div class="card-body p-0">
-                                                        <a
-                                                            href="{{$data->link}}"><b
-                                                                class="">{{ $data->name }}</b>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                
+                            <div class="card mt-2">
+                                <div class="similar-products mt-2 d-flex flex-row">
+                                    <div class="row">
+
+                                    @foreach ($datas as $data)
+{{--                                        <div class="col-6 col-sm-4 col-md-6">--}}
+{{--                                            <div class="card border p-1" style="width: 9rem;margin-right: 3px;">--}}
+{{--                                                <a--}}
+{{--                                                    href="{{$data->link }}"><img--}}
+{{--                                                        src="{{ route('imagecache', ['template' => 'pfism', 'filename' => $data->vc()]) }}"--}}
+{{--                                                        class="card-img-top" alt="..."></a>--}}
+
+{{--                                                <div class="card-body p-0">--}}
+{{--                                                    <a  href="{{$data->link}}"><b >{{ $data->name }}</b></a>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+
+
+
+
+                                        <div class="col-6 col-sm-4 col-md-3" style="padding:15px !important; text-align: center; overflow: hidden">
+                                            <a
+                                                href="{{$data->link }}" style="text-decoration: none; color: black;"><img style="width: 200px; height: 200px;"
+                                                src="{{ route('imagecache', ['template' => 'pfism', 'filename' => $data->vc()]) }}"
+                                                class="card-img-top" alt="..."></a>
+
+                                            <div class="card-body p-0">
+                                                <a  href="{{$data->link}}" style="text-decoration: none; color: black;"> <p style="width: 200px !important; padding-top: 10px !important;"> {{ $data->name }}</p></a>
+                                            </div>
+                                            {{--                                    </div>--}}
                                         </div>
+
+                                    @endforeach
+
                                     </div>
-                            
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>

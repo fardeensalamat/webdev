@@ -364,7 +364,6 @@ Route::group(['middleware' => ['auth', 'role:subscriber'], 'prefix' => 'mypanel'
 
 
 
-
     // upgrade account
     Route::get('subscriber/upgrade/newsubscription-paid/{subscription}/category/{cat}', [
         'uses' => 'Subscirber\UserSubscriberDashboardController@updateubscriptionPaid',
@@ -1150,8 +1149,11 @@ Route::get('profile/review/rating/delete/{id}', [
         'as' => 'user.sales'
     ]);
 
-
-
+    //user Media Controller
+    Route::get('user/media/all', [
+        'uses' => 'User\UserDashborad\UserDashboardController@userMediaAll',
+        'as' => 'user.mediaAll'
+    ]);
 
     //Make Service Profile
     Route::get('create/service/profile', [
@@ -1264,6 +1266,34 @@ Route::get('profile/review/rating/delete/{id}', [
         'uses' => 'User\UserDashborad\EmployeeDashboardController@EmployeeHistoryInfo',
         'as' => 'user.EmployeeHistoryInfo'
     ]);
+
+
+    
+    //---------------fardeen employee report----------------
+ Route::get('dashboard/employee/employeereport/list/', [
+    'uses' => 'User\UserDashborad\EmployeeDashboardController@EmployeeReport',
+    'as' => 'user.employeeReport'
+]);
+
+Route::match(['get', 'post'],'dashboard/employee/employeereport/list/edit/{id}', [
+    'uses' => 'User\UserDashborad\EmployeeDashboardController@EmployeeReportUpdate',
+    'as' => 'user.employeeReport.edit'
+]);
+
+
+Route::get('dashboard/employee/employeereport/add', [
+    'uses' => 'User\UserDashborad\EmployeeDashboardController@EmployeeReportAdd',
+    'as' => 'user.employeeReportAdd'
+]);
+
+Route::post('dashboard/employee/employeereport/store', [
+    'uses' => 'User\UserDashborad\EmployeeDashboardController@EmployeeReportStore',
+    'as' => 'user.storeemployeereport'
+]);
+
+ //---------------end fardeen employee report--------------
+
+
 
 
 
@@ -3402,23 +3432,7 @@ Route::get('suggession-complain/chat/{chat}', [
         'as' => 'admin.serviceprofileGetByDate'
     ]);
 
- //---------------fardeen employee report----------------
- Route::get('dashboard/employee/employeereport/list/', [
-    'uses' => 'User\UserDashborad\EmployeeDashboardController@EmployeeReport',
-    'as' => 'user.employeeReport'
-]);
 
-Route::get('dashboard/employee/employeereport/add', [
-    'uses' => 'User\UserDashborad\EmployeeDashboardController@EmployeeReportAdd',
-    'as' => 'user.employeeReportAdd'
-]);
-
-Route::post('dashboard/employee/employeereport/store', [
-    'uses' => 'User\UserDashborad\EmployeeDashboardController@EmployeeReportStore',
-    'as' => 'user.storeemployeereport'
-]);
-
- //---------------end fardeen employee report----------------
 
     Route::get('user/history/of/sales/user/{user}', [
         'uses' => 'Admin\History\AdminSubscriberHistoryController@userSalesHistoryInfo',

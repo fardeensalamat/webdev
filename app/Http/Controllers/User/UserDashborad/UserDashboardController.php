@@ -4144,8 +4144,8 @@ class UserDashboardController extends Controller
 
             Image::make($cp)->fit(160, 160, function ($constraint) {
                 $constraint->aspectRatio();
-            })->save(Storage::disk('public')->put('user/profile/' . $randomFileName, File::get($cp)));
-
+            })->save(storage_path('app/public/user/profile/' . $randomFileName));
+          
             $profile->img_name = $randomFileName;
             $profile->save();
         }
@@ -4169,7 +4169,7 @@ class UserDashboardController extends Controller
 
             Image::make($cp)->fit(958, 168, function ($constraint) {
                 $constraint->aspectRatio();
-            })->save(Storage::disk('public')->put('user/profile/' . $randomFileName, File::get($cp)));
+            })->save(storage_path('app/public/user/profile/cover/' . $randomFileName));
 
             $profile->cover_image = $randomFileName;
             $profile->save();
@@ -6206,6 +6206,8 @@ class UserDashboardController extends Controller
         
       
     }
+
+    
 
 
 

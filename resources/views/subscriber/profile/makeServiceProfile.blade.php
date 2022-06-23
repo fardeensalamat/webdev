@@ -125,6 +125,21 @@
                                                        #inlineRadio2:checked{
                                                        background-color:#932;
                                                        }
+
+                                                       #inlineRadio3{
+                                                       border:2px solid white;
+                                                       box-shadow:0 0 0 1px #932;
+                                                       appearance:none;
+                                                       border-radius:50%;
+                                                       width:14px;
+                                                       height:14px;
+                                                       background-color:#fff;
+                                                       transition:all ease-in 0.2s;
+
+                                                       }
+                                                       #inlineRadio3:checked{
+                                                       background-color:#932;
+                                                       }
                                                        /* new ajax form css start here asrana*/
                                                        
                                                        label.error {
@@ -161,6 +176,10 @@
                                                                <input class="form-check-input" type="radio" onchange="show1()" name="paynow" id="inlineRadio2" value="trial">
                                                                <label class="form-check-label" for="inlineRadio2">{{__('userserviceprofile.trial')}}</label>
                                                              </div>
+                                                             <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="radio" onchange="show2()" name="paynow" id="inlineRadio3" value="unpaid">
+                                                                <label class="form-check-label" for="inlineRadio3">{{__('userserviceprofile.trial')}}</label>
+                                                              </div>
                                                        </div>
                                                        <div id="yes" style="display: none;">
                                                            <p>Pay now if you want to publish.Paid accounts have lots of benefits.</p>
@@ -170,14 +189,25 @@
                                                            <p>Trial account have 45days free.Then you have to pay for this account.</p>
                                                           
                                                        </div>
+                                                       <div id="un" style="display: none;">
+                                                        <p>Unpaid profile is not published.</p>
+                                                       
+                                                    </div>
                                                        <script type="text/javascript">
                                                                function show(str){
                                                                    document.getElementById('yes').style.display = 'block';
                                                                    document.getElementById('no').style.display = 'none';
+                                                                   document.getElementById('un').style.display = 'none';
                                                                }
                                                                function show1(str){
                                                                    document.getElementById('yes').style.display = 'none';
                                                                    document.getElementById('no').style.display = 'block';
+                                                                   document.getElementById('un').style.display = 'none';
+                                                               }
+                                                               function show2(str){
+                                                                   document.getElementById('yes').style.display = 'none';
+                                                                   document.getElementById('no').style.display = 'none';
+                                                                   document.getElementById('un').style.display = 'block';
                                                                }
                                                        </script>
                    

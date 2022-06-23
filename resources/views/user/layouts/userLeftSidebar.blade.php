@@ -216,6 +216,14 @@
                       <p>{{ __('usersidebar.service_list') }}</p>
                   </a>
               </li>
+                {{-- Images --}}
+                {{-- <li class="nav-item">
+                    <a href="{{ route('user.mediaAll') }}"
+                        class="nav-link {{ session('lsbsm') == 'product' ? ' active ' : '' }}">
+                        <i class="nav-icon fas fa-images nav-icon"></i>
+                        <p>Images</p>
+                    </a>
+                </li> --}}
               @endif
                  <!-- Opinion -->
                  <li class="nav-item has-treeview {{ session('lsbm') == 'opinion' ? ' menu-open ' : '' }}">

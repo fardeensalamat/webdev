@@ -160,7 +160,7 @@
 
 
                     <div class="form-group my-2">
-                        <label for="feature_image_name">Feature Image: </label><b style="margin-left: 2vw; color: blue;"><a href="{{route('getImage',$product->category->id)}}" >Click here to get image</a></b>
+                        <label for="feature_image_name">Feature Image: </label><b style="margin-left: 2vw; color: blue;"><a href="{{route('getImage',$product->category->id)}}" target="_blank">Click here to get image</a></b>
                         <input type="file" name="feature_image_name" id="feature_image_name" class="form-control">
                         @if ($product->feature_image_name)
                             <br>

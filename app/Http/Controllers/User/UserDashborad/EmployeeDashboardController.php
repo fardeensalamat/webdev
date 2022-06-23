@@ -54,6 +54,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Cookie;
 use DateTime;
+use Image;
 
 class EmployeeDashboardController extends Controller
 {
@@ -189,9 +190,15 @@ class EmployeeDashboardController extends Controller
     public function EmployeeReport()
     {
         menuSubmenu('employee_report', 'employee_report');
-        $datas = EmployeeReport::all(); 
+
+        $datas = EmployeeReport::where('user_id', Auth::id())->get();
+
         return view('user.employeeReport.index',compact('datas'));
     }
+
+
+
+
 
     public function EmployeeReportAdd()
     {
@@ -200,39 +207,72 @@ class EmployeeDashboardController extends Controller
     }
 
 
+    public function EmployeeReportUpdate(Request  $request, $id){
+
+        $employee = EmployeeReport::where('id', $id)->first();
+        if($request->isMethod('post')){
+
+            $validated = $request->validate([
+                'location' => 'required',
+                'photo' => 'required',
+            ]);
+
+            $image =$request->photo;
+            $imageInfo = explode(";base64,", $image);
+            $imgExt = str_replace('data:image/', '', $imageInfo[0]);
+            $image = str_replace(' ', '+', $imageInfo[1]);
+            $imageName = $employee->id. '_employeereportimg_' . date('Y_m_d_his') . '_' . rand(10000000, 99999999).".".$imgExt;
+
+
+            Storage::disk('public')->put('employeereport/' .$imageName, base64_decode($image));
+
+
+            EmployeeReport::where('id', $id)->update(['end_location'=> $request->location, 'end_lat'=> $request->last_lat, 'end_lng' => $request->last_lng, 'last_image' => $imageName, 'status' => 'Done']);
+            return redirect()->route('user.employeeReport');
+        }
+        return  view('user.employeeReport.editReport', compact('employee'));
+
+
+    }
+
+
     public function EmployeeReportStore(Request $request)
     {
+        $validated = $request->validate([
+            'location' => 'required',
+            'photo' => 'required',
+        ]);
+
         $userNew = new EmployeeReport();
-        
+
         $userNew->type = $request->type;
         $userNew->date = $request->date;
         $userNew->note = $request->note;
         $userNew->special_note = $request->special_note;
         $userNew->user_id = Auth::user()->id;
-
-        if ($pi = $request->image) {
-            $f = 'employeereport/' . $userNew->image;
-            if (Storage::disk('public')->exists($f)) {
-                Storage::disk('public')->delete($f);
-            }
-            $extension = strtolower($pi->getClientOriginalExtension());
-            $randomFileName = $userNew->id. '_employeereportimg_' . date('Y_m_d_his') . '_' . rand(10000000, 99999999) . '.' . $extension;
-    
-            list($width, $height) = getimagesize($pi);
-            $mime = $pi->getClientOriginalExtension();
-            $size = $pi->getSize();
-    
-            $originalName = strtolower($pi->getClientOriginalName());
-    
-            Storage::disk('public')->put('employeereport/' . $randomFileName, File::get($pi));
-    
-            $userNew->image = $randomFileName;
-            
-             $userNew->save();
-        }
-     
-
+        $userNew->start_location = $request->location;
+        $userNew->start_lat = $request->start_lat;
+        $userNew->start_lng = $request->start_lng;
+        $userNew->status = 'start';
         $userNew->save();
+
+
+        if ($pi = $request->photo) {
+
+            $image =$request->photo;
+            $imageInfo = explode(";base64,", $image);
+            $imgExt = str_replace('data:image/', '', $imageInfo[0]);
+            $image = str_replace(' ', '+', $imageInfo[1]);
+            $imageName = $userNew->id. '_employeereportimg_' . date('Y_m_d_his') . '_' . rand(10000000, 99999999).".".$imgExt;
+
+            Storage::disk('public')->put('employeereport/' .$imageName, base64_decode($image));
+
+            $userNew->image = $imageName;
+            $userNew->save();
+
+        }
+
+
     	return redirect()->route('user.employeeReport');
 
     }
