@@ -25,7 +25,7 @@
                 <!-- Add icons to the links using the .nav-icon class
            with font-awesome or any other icon font library -->
 
-            @php 
+            @php
                 $profile=\App\Models\ServiceProfile::where('user_id',Auth::user()->id)->count();
                 $vendor=\App\Models\ServiceProductOrder::where('user_id',Auth::user()->id)->count();
                 $profilworker=\App\Models\ServiceProfileWorker::where('owner_id',Auth::user()->id)->count();
@@ -146,7 +146,7 @@
                 </li>
                 {{-- ./Dashboard --}}
 
-              
+
 
                 {{-- Orders --}}
                 <li class="nav-item has-treeview {{ session('lsbm') == 'orders' ? ' menu-open ' : '' }}">
@@ -208,7 +208,7 @@
                         <p>{{ __('usersidebar.product_list') }}</p>
                     </a>
                 </li>
-              
+
                 <li class="nav-item">
                   <a href="{{ route('user.ServieItems') }}"
                       class="nav-link {{ session('lsbsm') == 'ServieItems' ? ' active ' : '' }}">
@@ -253,9 +253,9 @@
 
               </li>
               {{-- ./Opinion --}}
-             
 
-              
+
+
                 {{-- Need --}}
                 {{-- <li class="nav-item">
                     <a href="{{ route('user.myBlog') }}"
@@ -311,7 +311,47 @@
                           <p>{{ __('usersidebar.category_commission_check') }}</p>
                       </a>
                   </li>
-                  @if (Auth::user()->is_tso)
+
+{{--                employee check in start--}}
+
+                    <li class="nav-item has-treeview {{ session('lsbm') == 'check' ? ' menu-open ' : '' }}">
+                        <a href="#" class="nav-link ">
+                            <i class="nav-icon far fa fa-check"></i>
+                            <p>
+                                Employee Check In
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+
+                            <li class="nav-item ">
+                                <a href="{{url('/mypanel/dashboard/employee/employeereport/list/checkin')}}"
+                                   class="nav-link {{ session('lsbsm') == 'add' ? ' active ' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Add Employee Check In</p>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a href="{{route('user.allCheckIns')}}"
+                                   class="nav-link {{ session('lsbsm') == 'all' ? ' active ' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>All Check Ins</p>
+                                </a>
+                            </li>
+                        </ul>
+
+                    </li>
+
+
+
+
+
+
+
+
+
+
+                @if (Auth::user()->is_tso)
 
                     <li class="nav-item">
                         <a href="{{ route('user.myteam') }}"
@@ -320,6 +360,10 @@
                             <p>My Team</p>
                         </a>
                     </li>
+
+
+
+
                   @endif
                  @endif
 

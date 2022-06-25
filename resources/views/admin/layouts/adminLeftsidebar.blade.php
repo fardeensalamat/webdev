@@ -142,7 +142,7 @@
                              <p>Valued Customer List</p>
                          </a>
                      </li>
-               
+
 
                  </ul>
              </li>
@@ -172,15 +172,15 @@
                              <p>{{ __('adminsidebar.top_priority_list') }}</p>
                          </a>
                      </li>
-                     
+
 
                  </ul>
              </li>
         @endif
-    
+
 
        <!-- ----------------------------------------- -->
-         
+
 
          {{-- ./pages --}}
 
@@ -283,17 +283,17 @@
                             </li>
                         </ul>
 
-                       
+
                     </li>
 
                 @endif
-               
+
                 <li class="nav-item ">
                     <a href="{{route('admin.LogActivityList')}}" class="nav-link {{ session('lsbsm') == 'LogActivity' ? ' active ' : '' }}">
                         <i class="nav-icon fas fa-list nav-icon"></i>
                         <p>
                             Admin Activity Log
-                            
+
                         </p>
                     </a>
                 </li>
@@ -538,14 +538,32 @@
                             <i class="nav-icon fa fa-address-book nav-icon"></i>
                             <p>
                                 Employee Report
-    
+
                             </p>
                         </a>
                     </li>
                     </ul>
 
                 </li>
+
+                    <li class="nav-item has-treeview {{ session('lsbm') == 'check' ? ' menu-open ' : '' }}">
+                        <a href="{{route('admin.employeeAllCheckIns')}}" class="nav-link ">
+                            <i class="nav-icon fas fa-check-square nav-icon"></i>
+                            <p>
+                                Empolyee Check Ins
+
+                            </p>
+                        </a>
+                    </li>
+
+
             @endif
+
+
+
+
+
+
             @if (Auth::user()->hasPermission('freelancer'))
                 <li class="nav-item has-treeview {{ session('lsbm') == 'freelancer' ? ' menu-open ' : '' }}">
                     <a href="{{ route('admin.freelancerAll') }}" class="nav-link ">
@@ -588,7 +606,7 @@
 
                 @endif
 
-                
+
                   <li class="nav-item has-treeview {{ session('lsbm') == 'ratinglist' ? ' menu-open ' : '' }}">
                       <a href="{{ route('admin.ratinglist') }}" class="nav-link ">
                           <i class="nav-icon fa fa-star nav-icon"></i>
@@ -621,7 +639,7 @@
                                 <p>Applicant Category</p>
                             </a>
                         </li>
-                       
+
                     </ul>
                 </li>
 
@@ -726,7 +744,7 @@
 
                     </li>
                   @endif
-              
+
                 @if (Auth::user()->hasPermission('suggessionAll'))
                 <li
                     class="nav-item has-treeview {{ session('lsbm') == 'suggessionAll' ? ' menu-open ' : '' }}">
@@ -740,7 +758,7 @@
 
                 </li>
             @endif
-              
+
                 @if (Auth::user()->hasPermission('addwebsitelink'))
                     <li
                         class="nav-item has-treeview {{ session('lsbm') == 'create_service_profile' ? ' menu-open ' : '' }}">
@@ -799,7 +817,7 @@
                   </li>
               @endif
                <!-- ---------------------------------------------------->
-               
+
 
            <!-- ---------------------------------------------------->
                 @if (Auth::user()->hasPermission('blog'))
@@ -824,7 +842,7 @@
                                   <i class="nav-icon far fa-circle nav-icon"></i>
                                   <p>
                                     {{ __('adminsidebar.add_new_post') }}
-    
+
                                   </p>
                               </a>
                           </li>
@@ -833,7 +851,7 @@
                                   <i class="nav-icon far fa-circle nav-icon"></i>
                                   <p>
                                     {{ __('adminsidebar.blogs_categories') }}
-    
+
                                   </p>
                               </a>
                           </li>
@@ -842,7 +860,7 @@
                                 <i class="nav-icon far fa-circle nav-icon"></i>
                                 <p>
                                     {{ __('adminsidebar.blogs_tags') }}
-    
+
                                 </p>
                             </a>
                         </li>

@@ -61,6 +61,8 @@ use App\Models\SoftcomJobCandidate;
 use App\Models\LogActivity;
 use App\Models\ServiceProfileWorker;
 use Image;
+use App\Models\EmployeeCheckIn;
+
 class AdminController extends Controller
 {
 
@@ -4193,6 +4195,56 @@ class AdminController extends Controller
         return redirect()->route('admin.LogActivityList')->with('success', 'Deleted Successfully');
 
     }
+
+
+    public function employeeAllCheckIns(Request $request)
+    {
+
+        // dd($request->search_name);
+        $search = $request['search_name'] ?? "";
+
+        menuSubmenu('check', 'check');
+
+        if($search != ""){
+
+            $checkins = EmployeeCheckIn::orderBy('created_at', 'desc')->where('user_name', 'LIKE', "%$search%")->get();
+
+
+
+        }else{
+            $checkins = EmployeeCheckIn::orderBy('created_at', 'desc')->get();
+
+
+        }
+        return view('admin.employeeCheckIn.index',compact('checkins'));
+
+    }
+
+    //-----------end of fardeen code --------------------//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
