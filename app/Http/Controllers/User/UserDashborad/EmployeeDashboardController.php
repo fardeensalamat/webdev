@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User\UserDashborad;
 
 use App\Http\Controllers\Controller;
+use App\Models\EmployeeCheckIn;
 use Illuminate\Http\Request;
 use Auth;
 use Hash;
@@ -345,6 +346,85 @@ class EmployeeDashboardController extends Controller
     	return redirect()->route('user.employeeReport');
 
     }
+
+
+    //firdin
+
+
+    public function employeeCheckIn()
+    {
+        menuSubmenu('check', 'add');
+
+        return view('user.employeeCheckIn.add');
+
+    }
+
+
+    public function storeEmployeeCheckIn(Request $request)
+    {
+
+//        \Log::info($request->all());
+//
+//        dd($request);die;
+
+        $add = new EmployeeCheckIn();
+        $add->name = $request->name;
+        $add->phone = $request->phone;
+        $add->address = $request->location;
+        $add->latitude = $request->lat;
+        $add->longitude = $request->lng;
+        $add->note = $request->note;
+        $add->user_id = Auth::user()->id;
+        $add->user_name = Auth::user()->name;
+
+        $add->save();
+
+
+
+        return redirect()->route('user.allCheckIns')->with('success', 'Checked In  Successfully');
+
+    }
+
+    public function allCheckIns()
+    {
+        menuSubmenu('check', 'all');
+
+        $checkins = EmployeeCheckIn::orderBy('created_at', 'desc')->where('user_id', Auth::user()->id)->get();;
+
+        return view('user.employeeCheckIn.index',compact('checkins'));
+
+    }
+
+    public function deleteCheckIns($id=null)
+    {
+
+        $data = EmployeeCheckIn::where('id',$id)->first();
+        $data->delete();
+
+        return redirect()->route('user.allCheckIns')->with('success', 'Check In Delte Successfully');
+
+    }
+//end firdin
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public function myteam()
     {

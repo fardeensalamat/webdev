@@ -67,7 +67,7 @@
                                         <td>{{ $data->date }}</td>
 
                                         <td>
-                                            <a class="btn btn-success btn-xs" href="{{route('admin.deleteEmployeeReport',$data->id)}}">Edit</a><br>
+                                            <a class="btn btn-success btn-xs" style="margin-bottom: 5px !important;" href="{{route('admin.editEmployeeReport',$data->id)}}">Details</a><br>
 
                                             <a class="btn btn-danger btn-xs" href="{{route('admin.deleteEmployeeReport',$data->id)}}">Delete</a>
                                         </td>

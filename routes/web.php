@@ -1774,6 +1774,79 @@ Route::get('search', ['uses' => 'AutocompleteSearchController@autosearch', 'as' 
     //     'as' => 'user.withdrawList'
     // ]);
 
+
+
+    //--------------- Employee Check In ------------------//
+
+    Route::get('dashboard/employee/employeereport/list/all/', [
+        'uses' => 'User\UserDashborad\EmployeeDashboardController@allCheckIns',
+        'as' => 'user.allCheckIns'
+    ]);
+
+
+
+    Route::get('dashboard/employee/employeereport/list/checkin', [
+        'uses' => 'User\UserDashborad\EmployeeDashboardController@employeeCheckIn',
+        'as' => 'user.employeeCheckIn'
+    ]);
+
+
+
+//    Route::post('dashboard/employee/employeereport/store/', [
+//        'uses' => 'User\UserDashborad\EmployeeDashboardController@storeEmployeeCheckIn',
+//        'as' => 'user.storeEmployeeCheckIn'
+//    ]);
+
+
+    Route::post('dashboard/employee/employeereport/make/store/', [
+        'uses' => 'User\UserDashborad\EmployeeDashboardController@storeEmployeeCheckIn',
+        'as' => 'user.makeStoreCheckIn'
+    ]);
+
+
+
+
+    Route::get('dashboard/employee/employeereport/allcheckin', [
+        'uses' => 'User\UserDashborad\EmployeeDashboardController@allCheckIns',
+        'as' => 'user.allCheckIns'
+    ]);
+
+    Route::get('dashboard/employee/employeereport/delete/{id}', [
+        'uses' => 'User\UserDashborad\EmployeeDashboardController@deleteCheckIns',
+        'as' => 'user.deleteCheckIn'
+    ]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     Route::get('commission/transfer-states', [
         'uses' => 'User\Withdraw\UserBalanceWithdrawController@commissionTransferStates',
         'as' => 'user.commissionTransferStates'
@@ -1800,6 +1873,63 @@ Route::get('search', ['uses' => 'AutocompleteSearchController@autosearch', 'as' 
         'uses' => 'User\UserDashborad\UserDashboardController@searchLeftCategoryAjax',
         'as' => 'user.searchLeftCategoryAjax'
     ]);
+
+
+
+
+
+
+
+
+
+
+
+    //---------------fardeen employee report----------------
+    Route::get('dashboard/employee/employeereport/list/', [
+        'uses' => 'User\UserDashborad\EmployeeDashboardController@EmployeeReport',
+        'as' => 'user.employeeReport'
+    ]);
+
+
+    Route::match(['get', 'post'],'dashboard/employee/employeereport/list/edit/{id}', [
+        'uses' => 'User\UserDashborad\EmployeeDashboardController@EmployeeReportUpdate',
+        'as' => 'user.employeeReport.edit'
+    ]);
+
+
+
+    Route::get('dashboard/employee/employeereport/add', [
+        'uses' => 'User\UserDashborad\EmployeeDashboardController@EmployeeReportAdd',
+        'as' => 'user.employeeReportAdd'
+    ]);
+
+    Route::post('dashboard/employee/employeereport/store', [
+        'uses' => 'User\UserDashborad\EmployeeDashboardController@EmployeeReportStore',
+        'as' => 'user.storeemployeereport'
+    ]);
+
+    //---------------end fardeen employee report----------------
+
+
+
+
+
+    //--------------- End Employee Check In ------------------//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2624,6 +2754,17 @@ Route::get('dashborad/tenentinformation/{type}', [
         'as' => 'admin.serviceProfileDelete'
     ]);
 
+
+
+    //------------------------------------------------
+    Route::get('employee/checkins/all', [
+        'uses' => 'Admin\AdminController@employeeAllCheckIns',
+        'as' => 'admin.employeeAllCheckIns'
+    ]);
+    //------------------------------------------------
+
+
+
     Route::get('service/status/profile/{profile}/status/{status}', [
         'uses' => 'Admin\AdminController@profileStatusChange',
         'as' => 'admin.profileStatusChange'
@@ -3410,31 +3551,7 @@ Route::get('suggession-complain/chat/{chat}', [
         'as' => 'admin.serviceprofileGetByDate'
     ]);
 
- //---------------fardeen employee report----------------
- Route::get('dashboard/employee/employeereport/list/', [
-    'uses' => 'User\UserDashborad\EmployeeDashboardController@EmployeeReport',
-    'as' => 'user.employeeReport'
-]);
 
-
-    Route::match(['get', 'post'],'dashboard/employee/employeereport/list/edit/{id}', [
-        'uses' => 'User\UserDashborad\EmployeeDashboardController@EmployeeReportUpdate',
-        'as' => 'user.employeeReport.edit'
-    ]);
-
-
-
-Route::get('dashboard/employee/employeereport/add', [
-    'uses' => 'User\UserDashborad\EmployeeDashboardController@EmployeeReportAdd',
-    'as' => 'user.employeeReportAdd'
-]);
-
-Route::post('dashboard/employee/employeereport/store', [
-    'uses' => 'User\UserDashborad\EmployeeDashboardController@EmployeeReportStore',
-    'as' => 'user.storeemployeereport'
-]);
-
- //---------------end fardeen employee report----------------
 
     Route::get('user/history/of/sales/user/{user}', [
         'uses' => 'Admin\History\AdminSubscriberHistoryController@userSalesHistoryInfo',
@@ -3597,6 +3714,14 @@ Route::get('admin/employee/employeereport/delete/{id}', [
     'uses' => 'Admin\AdminController@deleteEmployeeReport',
     'as' => 'admin.deleteEmployeeReport'
 ]);
+
+
+    Route::get('admin/employee/employeereport/edit/{id}', [
+        'uses' => 'Admin\AdminController@editEmployeeReport',
+        'as' => 'admin.editEmployeeReport'
+    ]);
+
+
 
      Route::get('admin/addvaluedcustomer', [
         'uses' => 'Admin\AdminSetupController@addValuedCustomers',

@@ -61,6 +61,8 @@ use App\Models\SoftcomJobCandidate;
 use App\Models\LogActivity;
 use App\Models\ServiceProfileWorker;
 use Image;
+use App\Models\EmployeeCheckIn;
+
 class AdminController extends Controller
 {
 
@@ -72,7 +74,7 @@ class AdminController extends Controller
 
     public function dashboard(Request $request)
     {
-      
+
         menuSubmenu('dashboard', 'dashboard');
 
         $withdrawSum = BalanceTransaction::where(function ($qq) {
@@ -84,9 +86,9 @@ class AdminController extends Controller
 
         $me = Auth::user();
 
-       
 
-      
+
+
 
         // dd($soft);
         return  view('admin.dashboard', [
@@ -234,7 +236,7 @@ class AdminController extends Controller
         $order=ServiceProductOrder::get();
         $total_order=$order->count();
         $total_order_amount=$order->sum('order_confirmed_price');
-        
+
         $commission= BalanceTransaction::where('to', 'admin')
         ->where('purpose','service_product_commission')
         ->sum('moved_balance');
@@ -242,7 +244,7 @@ class AdminController extends Controller
         $serviceItems = Serviceitem::latest()->take(5)->get();
         $serviceItemOrders= ServicePayment::orderByRaw("FIELD(order_status ,'pending', 'confirmed', 'delivered','satisfied','un_satisfied','canceled') ASC")->latest()->take(5)->get();
 
-    
+
         //    dd($order);
 
         // dd($soft);
@@ -257,7 +259,7 @@ class AdminController extends Controller
             'serviceItemOrders'=>$serviceItemOrders,
             'orders'=>$orders
 
-           
+
         ]);
     }
 
@@ -428,7 +430,7 @@ class AdminController extends Controller
 
         $request->validate([
             'location' => 'required',
-            
+
         ]);
 
         $service_profile = ServiceProfile::where('id', $request->profile_id)->first();
@@ -886,7 +888,7 @@ class AdminController extends Controller
       $checkcourseorder=CourseOrder::where('course_id',$item)->count();
       if($checkcourseorder<1){
         $course= Courseitem::find($item);
-       
+
         \LogActivity::addToLog($course->title. 'This Course Item Delete Successfully');
         $course->delete();
         return redirect()->back()->with('success', 'Course Item Delete Successfully');
@@ -894,7 +896,7 @@ class AdminController extends Controller
       }else{
         return redirect()->back()->with('warning', 'Course Item Depend On Order Table');
       }
-    
+
   }
 
 
@@ -1800,7 +1802,7 @@ class AdminController extends Controller
 
         //$user->passwordResetSmsSend();
         $user->decrement('balance', 2);
-        // Transiction 
+        // Transiction
         $bt = new BalanceTransaction;
         $bt->from = 'user';
         $bt->to = 'admin';
@@ -3040,13 +3042,13 @@ class AdminController extends Controller
     $user = User::where('id', $request->user)->first();
     $whoCreatingAccount = Auth::user();
 
-   
+
 
     $ifHaveSubscriptionByWhoCreating = Subscriber::where('user_id', $whoCreatingAccount->id)
         ->where('category_id', $request->category)
         ->first();
 
-  
+
 
         // if (!$ifHaveSubscriptionByWhoCreating) {
         //     return back()->with('error', 'You don\'t have Subscription in this category. Please Subscribe in this category and try again');
@@ -3058,7 +3060,7 @@ class AdminController extends Controller
     if($subscription){
         if($subscription->refferal_id==null){
             $subscription->refferal_id== $ifHaveSubscriptionByWhoCreating->id;
-            $subscription->save();   
+            $subscription->save();
         }
     }
 
@@ -3129,7 +3131,7 @@ class AdminController extends Controller
         }else{
             $subscription->referral_id = $reffer_id;
         }
-       
+
         $subscription->work_station_id = $workstationId;
         $subscription->subscription_code = $code;
         $subscription->addedby_id = Auth::id();
@@ -3149,8 +3151,8 @@ class AdminController extends Controller
     //     return back()->with('error', 'Already submitted a profile.' . $moreTalk)->withInput();
     // }
 
-   
-    
+
+
     $profile = new ServiceProfile;
     $profile->user_id = $subscription->user_id;
     $profile->subscriber_id = $subscription->id;
@@ -3330,13 +3332,13 @@ class AdminController extends Controller
     if($request->paynow == "paynow"){
        // dd($request->paynow);
         if ($whoCreatingAccount->balance < 100) {
-       
+
             return redirect()->route('user.userBalance')->with('error', 'Your account balance less then 100 tk. If you want to create service then please recharge.');
-           
+
             //return redirect()->back()->with('error', 'Your account balance less then ' . $category->sp_create_charge . '. if you want to create service then please recharge.');
         }else{
             if($profile->paystatus==0){
-                
+
                 $bt = new BalanceTransaction;
                 $bt->from = 'user';
                 $bt->to = 'admin';
@@ -3353,8 +3355,8 @@ class AdminController extends Controller
                 $bt->save();
                 $whoCreatingAccount->decrement('balance', $bt->moved_balance);
                 $user->increment('ad_balance', $category->sp_adtopup_bonus);
-                $profile->paystatus = 1; 
-                $profile->status = true; 
+                $profile->paystatus = 1;
+                $profile->status = true;
                 $profile->save();
 
                 $number=$user->mobile;
@@ -3369,7 +3371,7 @@ class AdminController extends Controller
                 }catch (Exception $e) {
                     echo $e->getMessage();
                 }
-                return back()->with('success', 'Profile Submitted Successfully.'); 
+                return back()->with('success', 'Profile Submitted Successfully.');
 
             }else{
                 return redirect()->with('error', 'You already pay for this service profile');
@@ -3383,8 +3385,8 @@ class AdminController extends Controller
 
     if($request->paynow = "trial"){
         $profile->expired_at = Carbon::now()->addDay(45);
-        $profile->is_trial = 1; 
-        $profile->status = true; 
+        $profile->is_trial = 1;
+        $profile->status = true;
         $profile->save();
 
         $number=$user->mobile;
@@ -3399,7 +3401,7 @@ class AdminController extends Controller
             } catch (Exception $e) {
                 echo $e->getMessage();
             }
-            return back()->with('success', 'Profile Submitted Successfully.'); 
+            return back()->with('success', 'Profile Submitted Successfully.');
 
     }
 
@@ -3706,7 +3708,7 @@ class AdminController extends Controller
         return back()->with('success', 'Category Deleted Successfully');
     }
 
-    // Tags 
+    // Tags
     public function tags(Request $request)
     {
         menuSubmenu('allBlogs', 'tags');
@@ -3839,7 +3841,7 @@ class AdminController extends Controller
         menuSubmenu('suggessionAll','suggessionAll');
        $suggessions= Suggestion::where('parent_id',null)->orderBy('closed')->orderBy('created_at','desc')->get();
 
-     
+
        return view('admin.suggession.allSuggession',compact('suggessions'));
     }
 
@@ -3860,14 +3862,14 @@ class AdminController extends Controller
         $request->validate([
             'message' => 'required',
             //'key' => 'required',
-            
+
         ]);
 
         // if( $request->key!="1234"){
         //     return redirect()->back()->with('warning', 'Key is Wrong');
         // }
         $messages= $request->message;
-        
+
 
         if($request->workstation!='' && $request->category!=''){
             $users = DB::table('users')
@@ -3883,7 +3885,7 @@ class AdminController extends Controller
         }
 
         $user_count= $users->count();
-       
+
        if($user_count>0){
         foreach($users as $user){
             $number= $user->mobile;
@@ -3899,10 +3901,10 @@ class AdminController extends Controller
         }
 
        }else{
-        return redirect()->back()->with('warning', 'User  not Found');  
+        return redirect()->back()->with('warning', 'User  not Found');
        }
 
-    
+
         return redirect()->back()->with('success', 'Message Send Successfully');
     }
 
@@ -3919,7 +3921,7 @@ class AdminController extends Controller
             'title'=>'required',
             'message' => 'required',
             'details' => 'required'
-            
+
         ]);
 
         // if( $request->key!="1234"){
@@ -3928,7 +3930,7 @@ class AdminController extends Controller
         $messages= $request->message;
         $title= $request->title;
         $details= $request->details;
-        
+
 
         if($request->workstation!='' && $request->category!=''){
             $users = DB::table('users')
@@ -3946,7 +3948,7 @@ class AdminController extends Controller
         //dd($users)
 
         $user_count= $users->count();
-       
+
        if($user_count>0){
         foreach($users as $user){
             $notification1=new OrderNotifications;
@@ -3958,15 +3960,15 @@ class AdminController extends Controller
             $notification1->status='1';
             $notification1->date=now();
             $notification1->save();
-           
+
 
         }
 
        }else{
-        return redirect()->back()->with('warning', 'User  not Found');  
+        return redirect()->back()->with('warning', 'User  not Found');
        }
 
-    
+
         return redirect()->back()->with('success', 'Notification Send Successfully');
     }
 
@@ -3981,14 +3983,14 @@ class AdminController extends Controller
         }else{
             $categories =Category::orderBy('name', 'asc')->get();
         }
-        
-       
+
+
        return view('admin.categories.categorylist', [
             'categories' => $categories,
             'workstations' => $workstations,
             'workstation_id' => $workstation_id
         ]);
-       
+
     }
 
     public function updatecategorylist(Request $request)
@@ -4006,7 +4008,7 @@ class AdminController extends Controller
             $categories->service_product_commission=$service_product_commission[$i];
             $categories->save();
        }
-        
+
         return redirect()->back()->with('success', 'Update  Successfully');
 
 
@@ -4077,7 +4079,7 @@ class AdminController extends Controller
                 ->withInput()
                 ->withErrors($validation);
         }
-      
+
         $data = Rating::where('id',$request->id)->first();
         $data->rating = $request->rating;
         $data->comments = $request->comments;
@@ -4108,11 +4110,11 @@ class AdminController extends Controller
     public function applicationupdate(Request $request)
     {
 
-       
+
         $id=$request->id;
         $type=$request->type;
 
-       
+
         $data = SoftcomJobCandidate::where('id', $id)->first();
         if($type==1){
             $data->status=$request->type;
@@ -4120,7 +4122,7 @@ class AdminController extends Controller
             $data->status=$request->type;
         }
         $data->save();
-       
+
         return redirect()->route('admin.applicationlist')->with('success', 'Status Update Successfully');
     }
 
@@ -4128,7 +4130,7 @@ class AdminController extends Controller
     public function EmployeeReport()
     {
         menuSubmenu('employeeReport', 'employeeReport');
-        $datas = EmployeeReport::all(); 
+        $datas = EmployeeReport::all();
         return view('admin.employeeReport.index',compact('datas'));
     }
 
@@ -4139,8 +4141,44 @@ class AdminController extends Controller
 
         $data->delete();
         return redirect()->route('admin.employeeReport')->with('success', 'Deleted Successfully');
-        
+
     }
+
+
+
+    public function editEmployeeReport($id){
+        $employeDetails = EmployeeReport::where('id', $id)->first();
+        $paidService = ServiceProfile::where('user_id', $id)->where('paystatus', 1)->get();
+
+        $unpaidService = ServiceProfile::where('user_id', $id)->where('paystatus', 0)->get();
+
+        $trilService = ServiceProfile::where('user_id', $id)->where('is_trial', 1)->get();
+
+
+
+        return view('admin.employeeReport.employeeDetails', compact('employeDetails', 'paidService', 'unpaidService', 'trilService'));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public function LogActivityList()
     {
@@ -4155,10 +4193,60 @@ class AdminController extends Controller
         $data = LogActivity::where('id',$id)->first();
         $data->delete();
         return redirect()->route('admin.LogActivityList')->with('success', 'Deleted Successfully');
-        
+
     }
 
-   
+
+    public function employeeAllCheckIns(Request $request)
+    {
+
+        // dd($request->search_name);
+        $search = $request['search_name'] ?? "";
+
+        menuSubmenu('check', 'check');
+
+        if($search != ""){
+
+            $checkins = EmployeeCheckIn::orderBy('created_at', 'desc')->where('user_name', 'LIKE', "%$search%")->get();
+
+
+
+        }else{
+            $checkins = EmployeeCheckIn::orderBy('created_at', 'desc')->get();
+
+
+        }
+        return view('admin.employeeCheckIn.index',compact('checkins'));
+
+    }
+
+    //-----------end of fardeen code --------------------//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

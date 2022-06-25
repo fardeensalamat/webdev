@@ -1500,7 +1500,7 @@
                              <i class="fa fa-star" aria-hidden="true" style="color:yellow !important;"></i>
                          </div>
                          <div >
-                             <p class="text-muted">{{$rating}} rattings</p>
+                             <p class="text-muted">{{count($rating)}} rattings</p>
                          </div>
                      </div>
 
